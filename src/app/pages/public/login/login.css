@@ -1,0 +1,239 @@
+/* Reset y configuración general */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .login-page {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  
+  .login-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+  }
+  
+  /* ========== COLUMNA IZQUIERDA - FORMULARIO ========== */
+  .login-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 60px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e0 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  
+  
+  /* Título */
+  .login-form h2 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 50px;
+    line-height: 1.2;
+  }
+  
+  /* Formulario */
+  .form {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .form-group {
+    margin-bottom: 30px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 18px 24px;
+    border: 2px solid rgba(226, 232, 240, 0.8);
+    border-radius: 30px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    color: #2d3748;
+  }
+  
+  .form-group input::placeholder {
+    color: #a0aec0;
+    font-weight: 400;
+  }
+  
+  .form-group input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+  }
+  
+  .form-group input:hover:not(:focus) {
+    border-color: #cbd5e0;
+    background: rgba(255, 255, 255, 0.95);
+  }
+  
+  /* Botón */
+  .login-btn {
+    width: 100%;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 10px 0 20px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .login-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6b46a3 100%);
+  }
+  
+  .login-btn:active:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+  
+  .login-btn:disabled {
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Link de registro */
+  .register-link {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .register-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 20px;
+  }
+  
+  .register-link a:hover {
+    color: #764ba2;
+    background: rgba(102, 126, 234, 0.1);
+    text-decoration: none;
+  }
+  
+  /* ========== COLUMNA DERECHA - IMAGEN ========== */
+  
+  
+  /* Elementos flotantes */
+  .floating-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  
+  .float-element {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    animation: floatBackground 8s ease-in-out infinite;
+  }
+  
+  .float-1 {
+    width: 150px;
+    height: 150px;
+    top: 10%;
+    left: 15%;
+    animation-delay: 1s;
+  }
+  
+  .float-2 {
+    width: 100px;
+    height: 100px;
+    top: 60%;
+    right: 20%;
+    animation-delay: 3s;
+  }
+  
+  .float-3 {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    left: 60%;
+    animation-delay: 5s;
+  }
+  
+  
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .login-container {
+      flex-direction: column;
+    }
+    
+    .login-form {
+      flex: none;
+      height: 60vh;
+      padding: 0 30px;
+    }
+    
+    .login-form h2 {
+      font-size: 2.2rem;
+      margin-bottom: 30px;
+    }
+    
+    .login-image {
+      height: 40vh;
+    }
+    
+    .main-image {
+      max-height: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .login-form {
+      padding: 0 20px;
+    }
+    
+    .login-form h2 {
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group input,
+    .login-btn {
+      padding: 15px 20px;
+    }
+  }
