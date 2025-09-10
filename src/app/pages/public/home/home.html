@@ -1,1 +1,72 @@
-<p>home works!</p>
+<section class="hero-section">
+  <div class="hero-container">
+    <img [src]="images[current].src" [alt]="images[current].alt" class="hero-image">
+    <div class="hero-overlay"></div>
+    
+    <div class="hero-content">
+      <h1 class="hero-title">
+        BIENVENIDO A 
+        <span class="hero-brand">SONRISAS FELICES</span>
+      </h1>
+      <p class="hero-subtitle">
+        Ofrecemos atención dental integral con tecnología de vanguardia.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn-primary">Agendar Cita</button>
+        <button class="btn-secondary">Conocer Más</button>
+      </div>
+    </div>
+    
+    <button (click)="prev()" class="carousel-btn carousel-prev">◀</button>
+    <button (click)="next()" class="carousel-btn carousel-next">▶</button>
+  </div>
+</section>
+
+<section class="services-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Nuestros Servicios</h2>
+      <p class="section-description">
+        Ofrecemos una amplia gama de servicios dentales con tecnología de vanguardia
+      </p>
+    </div>
+  </div>
+   <div class="services-grid">
+      <div *ngFor="let service of services" class="service-card">
+        <div class="service-image-container">
+          <img [src]="service.image" [alt]="service.title" class="service-image">
+          <div class="service-icon">{{service.icon}}</div>
+        </div>
+        <h3 class="service-title">{{service.title}}</h3>
+        <p class="service-description">{{service.description}}</p>
+      </div>
+    </div>
+  
+  </section>
+
+<section class="location-section">
+  <div class="container">
+    <div class="location-grid">
+      <div class="location-info">
+        <h2 class="section-title">Visítanos</h2>
+        <p class="section-description">
+          Estamos ubicados en el corazón de la ciudad...
+        </p>
+        <div class="contact-info">
+          <p>📍 Av. Principal 123, Centro</p>
+          <p>📞 (555) 123-4567</p>
+          <p>⏰ Lun - Vie: 8:00 AM - 6:00 PM</p>
+        </div>
+        <button class="btn-primary">Obtener Direcciones</button>
+      </div>
+      <div class="map-container">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18..." 
+          frameborder="0" 
+          allowfullscreen
+          class="map-iframe">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
