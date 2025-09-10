@@ -8,7 +8,6 @@ body {
   color: var(--foreground);
   font-size: var(--font-size);
   margin: 0;
-  font-family: sans-serif;
 }
 
 h1 { font-size: 2rem; font-weight: var(--font-weight-medium); line-height: 1.5; }
