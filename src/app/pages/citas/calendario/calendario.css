@@ -1,0 +1,323 @@
+/* Contenedor principal */
+.calendario-container {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+}
+
+/* Título */
+.calendario-container h2 {
+  color: var(--card-foreground);
+  margin: 0 0 2rem 0;
+  text-align: center;
+}
+
+/* Calendario personalizado */
+.calendario-custom {
+  background: var(--background);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+/* Header del calendario */
+.calendario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: var(--accent);
+  border-bottom: 1px solid var(--border);
+}
+
+.mes-año {
+  color: var(--accent-foreground);
+  margin: 0;
+  font-weight: 600;
+  min-width: 140px;
+  text-align: center;
+}
+
+.nav-button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--background);
+  color: var(--foreground);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.nav-button:hover:not(:disabled) {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Días de la semana */
+.dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.dia-semana {
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Grid de días */
+.dias-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.dia-celda {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.dia-celda:nth-child(7n) {
+  border-right: none;
+}
+
+.dia-celda:nth-last-child(-n+7) {
+  border-bottom: none;
+}
+
+/* Estados de los días */
+.dia-otro-mes {
+  color: var(--muted-foreground);
+  background: var(--muted);
+  cursor: not-allowed;
+}
+
+.dia-hoy {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  font-weight: 600;
+}
+
+.dia-seleccionado {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  font-weight: 600;
+}
+
+.dia-disponible:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.dia-no-disponible {
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.dia-no-disponible::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 70%;
+  background: var(--muted-foreground);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Sección de horas */
+.horas h3 {
+  color: var(--card-foreground);
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+.horas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.75rem;
+}
+
+/* Botones de hora */
+.horas-grid button {
+  padding: 0.75rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.horas-grid button:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--ring);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.horas-grid button:active {
+  transform: translateY(0);
+}
+
+/* Estado seleccionado */
+.horas-grid button.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.horas-grid button.selected:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  opacity: 0.9;
+}
+
+/* Botones deshabilitados */
+.horas-grid button:disabled,
+.horas-grid button.disabled {
+  background: var(--muted);
+  border-color: var(--border);
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+/* Sección de confirmación */
+.confirmacion {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--accent);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.cita-resumen {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.icono-calendario {
+  font-size: 2rem;
+  opacity: 0.8;
+}
+
+.cita-detalles {
+  flex: 1;
+}
+
+.cita-detalles p {
+  color: var(--accent-foreground);
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+.cita-detalles strong {
+  font-weight: 600;
+}
+
+/* Botón de confirmar */
+.btn-confirmar {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.btn-confirmar:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-confirmar:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .calendario-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .calendario-header {
+    padding: 0.75rem;
+  }
+  
+  .mes-año {
+    font-size: 1rem;
+    min-width: 120px;
+  }
+  
+  .nav-button {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  
+  .dia-semana {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .dia-celda {
+    font-size: 0.75rem;
+  }
+  
+  .horas-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .horas-grid button {
+    padding: 0.625rem 0.25rem;
+    font-size: 0.75rem;
+  }
+}

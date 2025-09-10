@@ -1,0 +1,81 @@
+<div class="calendario-container">
+  <h2>Agendar Cita</h2>
+
+  <!-- Calendario personalizado -->
+  <div class="calendario-custom">
+    <div class="calendario-header">
+      <button 
+        type="button" 
+        class="nav-button" 
+        (click)="previousMonth()"
+        [disabled]="!canNavigateToPrevious()"
+      >
+        ←
+      </button>
+      <h3 class="mes-año">{{ getCurrentMonthYear() }}</h3>
+      <button 
+        type="button" 
+        class="nav-button" 
+        (click)="nextMonth()"
+        [disabled]="!canNavigateToNext()"
+      >
+        →
+      </button>
+    </div>
+
+    <div class="dias-semana">
+      <div class="dia-semana" *ngFor="let dia of diasSemana">{{ dia }}</div>
+    </div>
+
+    <div class="dias-grid">
+      <div 
+        *ngFor="let dia of diasCalendario" 
+        class="dia-celda"
+        [class.dia-otro-mes]="!dia.esDelMesActual"
+        [class.dia-hoy]="dia.esHoy"
+        [class.dia-seleccionado]="dia.estaSeleccionado"
+        [class.dia-disponible]="dia.estaDisponible && dia.esDelMesActual"
+        [class.dia-no-disponible]="!dia.estaDisponible && dia.esDelMesActual"
+        (click)="seleccionarDia(dia)"
+      >
+        {{ dia.numero }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Horas disponibles -->
+  <div class="horas" *ngIf="selectedDate">
+    <h3>Horas disponibles - {{ getFormattedSelectedDate() }}</h3>
+    <div class="horas-grid">
+      <button 
+        *ngFor="let hora of horasDisponibles" 
+        [class.selected]="hora === selectedHour"
+        [class.disabled]="!isHoraDisponible(hora)"
+        [disabled]="!isHoraDisponible(hora)"
+        (click)="seleccionarHora(hora)"
+        type="button"
+      >
+        {{ hora }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensaje de confirmación -->
+  <div *ngIf="selectedDate && selectedHour" class="confirmacion">
+    <div class="cita-resumen">
+      <div class="icono-calendario">📅</div>
+      <div class="cita-detalles">
+        <p><strong>Fecha:</strong> {{ getFormattedSelectedDate() }}</p>
+        <p><strong>Hora:</strong> {{ selectedHour }}</p>
+      </div>
+    </div>
+    
+    <button 
+      (click)="confirmarCita()" 
+      class="btn-confirmar"
+      type="button"
+    >
+      Confirmar Cita
+    </button>
+  </div>
+</div>
