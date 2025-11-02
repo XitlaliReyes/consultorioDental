@@ -1,6 +1,18 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+// ¡NUEVA IMPORTACIÓN! Necesaria para la vista 'mis-citas'
+import { MisCitasComponent } from '../mis-citas/mis-citas'; 
+
+// Interfaces (Se mantienen igual)
+interface Servicio {
+  ID_Servicio: number;
+  Nombre: string;
+  Descripcion: string;
+  Duracion: number;
+  Costo: number;
+}
 
 interface DiaCalendario {
   numero: number;
@@ -11,130 +23,80 @@ interface DiaCalendario {
   estaDisponible: boolean;
 }
 
+interface CitaResponse {
+  message: string;
+  id_cita: number;
+  id_medico_asignado: number;
+}
+
 @Component({
   selector: 'app-calendario',
   standalone: true,
-  imports: [FormsModule, DatePipe, CommonModule],
+  // ¡IMPORTANTE! Agregar MisCitasComponent y HttpClientModule
+  imports: [FormsModule, DatePipe, CommonModule, HttpClientModule, MisCitasComponent], 
   templateUrl: './calendario.html',
   styleUrls: ['./calendario.css']
 })
 export class Calendario implements OnInit {
-  // Propiedades existentes adaptadas
+
+  private apiUrl = 'http://localhost:3000';
+
+  // ** NUEVA PROPIEDAD: Controla la vista principal (selección, agendar, mis-citas) **
+  currentView: 'selection' | 'agendar' | 'mis-citas' = 'selection';
+
+  // Propiedades de Agendamiento (Se mantienen igual)
   selectedDate: Date | null = null;
   selectedHour: string | null = null;
-  
-  // Nuevas propiedades para el calendario personalizado
+  pasoActual: number = 1;
+  servicios: Servicio[] = [];
+  idServicioSeleccionado: number | null = null;
+  nombreServicioSeleccionado: string = '';
+  horasOcupadas: string[] = [];
+  notasCita: string = '';
+
+  // Propiedades de Calendario (Se mantienen igual)
   currentMonth: Date = new Date();
   diasCalendario: DiaCalendario[] = [];
   diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-  
+
   horasDisponibles: string[] = [
     '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
     '12:00', '12:30', '14:00', '14:30', '15:00', '15:30',
-    '16:00', '16:30', '17:00', '17:30'
+    '16:00', '16:30', '17:00'
   ];
 
-  // Simular horas no disponibles (ejemplo)
-  horasOcupadas: string[] = ['10:00', '14:30', '16:00'];
+  constructor(private http: HttpClient) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Solo cargamos servicios si estamos en la vista 'agendar' o en el paso 1
+    if (this.currentView === 'agendar' || this.pasoActual === 1) { 
+        this.cargarServicios(); 
+    }
     this.generarCalendario();
   }
+  
+  // ===================================
+  // ** LÓGICA DE NAVEGACIÓN DE VISTAS (NUEVA) **
+  // ===================================
 
-  // Métodos existentes adaptados
-  seleccionarHora(hora: string): void {
-    if (this.isHoraDisponible(hora)) {
-      this.selectedHour = hora;
+  selectView(view: 'agendar' | 'mis-citas'): void {
+    this.currentView = view;
+    // Si vamos a Agendar, aseguramos cargar los servicios y reiniciar el flujo
+    if (view === 'agendar') {
+      this.cargarServicios();
+      this.resetearFlujo(); // Esto asegura que 'pasoActual' sea 1
     }
   }
 
-  isHoraDisponible(hora: string): boolean {
-    return !this.horasOcupadas.includes(hora);
+  volverASeleccion(): void {
+    this.currentView = 'selection';
+    this.resetearFlujo(); // Opcional, pero buena práctica
   }
 
-  cargarHorasDisponibles(): void {
-    // Simular carga de horas disponibles basada en la fecha
-    console.log('Cargando horas para:', this.selectedDate);
-  }
-
-  confirmarCita(): void {
-    if (this.selectedDate && this.selectedHour) {
-      console.log('Cita confirmada:', {
-        fecha: this.selectedDate,
-        hora: this.selectedHour
-      });
-      
-      // Aquí enviarías los datos a tu backend
-      // this.citasService.crearCita(this.selectedDate, this.selectedHour)
-    }
-  }
-
-  // Nuevos métodos para el calendario personalizado
-  generarCalendario() {
-    const año = this.currentMonth.getFullYear();
-    const mes = this.currentMonth.getMonth();
-    const hoy = new Date();
-    
-    // Primer día del mes
-    const primerDia = new Date(año, mes, 1);
-    const ultimoDia = new Date(año, mes + 1, 0);
-    
-    // Días para mostrar (incluyendo días del mes anterior y siguiente)
-    const inicioCalendario = new Date(primerDia);
-    inicioCalendario.setDate(primerDia.getDate() - primerDia.getDay());
-    
-    const finCalendario = new Date(ultimoDia);
-    const diasRestantes = 6 - ultimoDia.getDay();
-    finCalendario.setDate(ultimoDia.getDate() + diasRestantes);
-
-    this.diasCalendario = [];
-    const fechaActual = new Date(inicioCalendario);
-
-    while (fechaActual <= finCalendario) {
-      const dia: DiaCalendario = {
-        numero: fechaActual.getDate(),
-        fecha: new Date(fechaActual),
-        esDelMesActual: fechaActual.getMonth() === mes,
-        esHoy: this.esMismaFecha(fechaActual, hoy),
-        estaSeleccionado: this.selectedDate ? this.esMismaFecha(fechaActual, this.selectedDate) : false,
-        estaDisponible: this.isDiaDisponible(fechaActual)
-      };
-      
-      this.diasCalendario.push(dia);
-      fechaActual.setDate(fechaActual.getDate() + 1);
-    }
-  }
-
-  esMismaFecha(fecha1: Date, fecha2: Date): boolean {
-    return fecha1.getDate() === fecha2.getDate() &&
-           fecha1.getMonth() === fecha2.getMonth() &&
-           fecha1.getFullYear() === fecha2.getFullYear();
-  }
-
-  isDiaDisponible(fecha: Date): boolean {
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
-    
-    const fechaComparar = new Date(fecha);
-    fechaComparar.setHours(0, 0, 0, 0);
-    
-    // No permitir fechas pasadas
-    if (fechaComparar < hoy) return false;
-    
-    // No permitir domingos (día 0)
-    if (fecha.getDay() === 0) return false;
-    
-    return true;
-  }
-
-  seleccionarDia(dia: DiaCalendario) {
-    if (!dia.esDelMesActual || !dia.estaDisponible) return;
-    
-    this.selectedDate = dia.fecha;
-    this.selectedHour = null; // Reset hora seleccionada
-    this.generarCalendario(); // Regenerar para actualizar selección
-    this.cargarHorasDisponibles(); // Cargar horas para la nueva fecha
-  }
+  // ===================================
+  // LÓGICA DE CALENDARIO Y NAVEGACIÓN (Se mantiene igual)
+  // ===================================
+  // ... (previousMonth, nextMonth, canNavigateToPrevious, canNavigateToNext, getCurrentMonthYear, getFormattedSelectedDate, generarCalendario, se mantienen igual) ...
 
   previousMonth() {
     if (!this.canNavigateToPrevious()) return;
@@ -152,15 +114,16 @@ export class Calendario implements OnInit {
     const prevMonth = new Date(this.currentMonth);
     prevMonth.setMonth(prevMonth.getMonth() - 1);
     const currentMonth = new Date();
-    return prevMonth.getMonth() >= currentMonth.getMonth() || 
-           prevMonth.getFullYear() > currentMonth.getFullYear();
+    currentMonth.setDate(1);
+    currentMonth.setHours(0, 0, 0, 0);
+    return prevMonth >= currentMonth;
   }
 
   canNavigateToNext(): boolean {
     const nextMonth = new Date(this.currentMonth);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     const limitMonth = new Date();
-    limitMonth.setMonth(limitMonth.getMonth() + 6); // Límite de 6 meses
+    limitMonth.setMonth(limitMonth.getMonth() + 6);
     return nextMonth <= limitMonth;
   }
 
@@ -174,11 +137,165 @@ export class Calendario implements OnInit {
 
   getFormattedSelectedDate(): string {
     if (!this.selectedDate) return '';
-    
-    const day = this.selectedDate.getDate().toString().padStart(2, '0');
-    const month = (this.selectedDate.getMonth() + 1).toString().padStart(2, '0');
-    const year = this.selectedDate.getFullYear();
-    
-    return `${day}/${month}/${year}`;
+    const date = this.selectedDate;
+    const options: Intl.DateTimeFormatOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    return date.toLocaleDateString('es-ES', options);
+  }
+
+  generarCalendario(): void {
+    this.diasCalendario = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const firstDayOfMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
+    const lastDayOfMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 0);
+
+    const startDayOfWeek = firstDayOfMonth.getDay();
+    for (let i = 0; i < startDayOfWeek; i++) {
+      const prevDate = new Date(firstDayOfMonth);
+      prevDate.setDate(firstDayOfMonth.getDate() - (startDayOfWeek - i));
+      this.diasCalendario.push({
+        numero: prevDate.getDate(),
+        fecha: prevDate,
+        esDelMesActual: false,
+        esHoy: false,
+        estaSeleccionado: false,
+        estaDisponible: false,
+      });
+    }
+
+    for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+      const currentDate = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), i);
+      currentDate.setHours(0, 0, 0, 0);
+
+      const isToday = currentDate.getTime() === today.getTime();
+      const isAvailable = currentDate >= today && currentDate.getDay() !== 0;
+
+      this.diasCalendario.push({
+        numero: i,
+        fecha: currentDate,
+        esDelMesActual: true,
+        esHoy: isToday,
+        estaSeleccionado: false,
+        estaDisponible: isAvailable,
+      });
+    }
+
+    const totalDays = this.diasCalendario.length;
+    const requiredTotal = 42;
+
+    for (let i = 1; this.diasCalendario.length < requiredTotal; i++) {
+      const nextDate = new Date(lastDayOfMonth);
+      nextDate.setDate(lastDayOfMonth.getDate() + i);
+      this.diasCalendario.push({
+        numero: nextDate.getDate(),
+        fecha: nextDate,
+        esDelMesActual: false,
+        esHoy: false,
+        estaSeleccionado: false,
+        estaDisponible: false,
+      });
+    }
+  }
+
+  // ===================================
+  // LÓGICA DE AGENDAMIENTO Y CONEXIÓN API (Se mantiene igual)
+  // ===================================
+
+  seleccionarServicio(servicio: Servicio): void {
+      this.idServicioSeleccionado = servicio.ID_Servicio;
+      this.nombreServicioSeleccionado = servicio.Nombre;
+      this.pasoActual = 2;
+  }
+
+  cargarServicios(): void {
+      this.http.get<Servicio[]>(`${this.apiUrl}/api/servicios`).subscribe({
+          next: (data) => {
+              this.servicios = data;
+          },
+          error: (err) => {
+              console.error('Error al cargar servicios:', err);
+          }
+      });
+  }
+
+  getHorasOcupadas(idServicio: number, fecha: Date): void {
+      const fechaFormateada = fecha.toISOString().split('T')[0];
+
+      this.http.get<{ horas_ocupadas: { hora: string }[] }>(
+          `${this.apiUrl}/api/citas/disponibilidad/${idServicio}/${fechaFormateada}`
+      ).subscribe({
+          next: (res) => {
+              this.horasOcupadas = res.horas_ocupadas.map(c => c.hora);
+          },
+          error: (err) => {
+              console.error('Error al cargar disponibilidad:', err);
+              this.horasOcupadas = [];
+          }
+      });
+  }
+
+  seleccionarDia(dia: DiaCalendario): void {
+    if (this.pasoActual !== 2) return;
+    if (!dia.esDelMesActual || !dia.estaDisponible) return;
+
+    this.diasCalendario.forEach((d: DiaCalendario) => d.estaSeleccionado = false);
+    dia.estaSeleccionado = true;
+    this.selectedDate = dia.fecha;
+    this.selectedHour = null;
+
+    if (this.selectedDate && this.idServicioSeleccionado) {
+        this.getHorasOcupadas(this.idServicioSeleccionado, this.selectedDate);
+    }
+  }
+
+  seleccionarHora(hora: string): void {
+    this.selectedHour = hora;
+  }
+
+  isHoraDisponible(hora: string): boolean {
+    return !this.horasOcupadas.includes(hora);
+  }
+
+  confirmarCita(): void {
+    if (!this.selectedDate || !this.selectedHour || !this.idServicioSeleccionado) {
+      console.error('Faltan datos para confirmar la cita.');
+      return;
+    }
+
+    const datosCita = {
+      fecha: this.selectedDate.toISOString().split('T')[0],
+      hora: this.selectedHour + ':00',
+      id_servicio: this.idServicioSeleccionado,
+      notas: this.notasCita
+    };
+
+    this.http.post<CitaResponse>(`${this.apiUrl}/api/citas/agendar`, datosCita).subscribe({
+      next: (response) => {
+        alert(`Cita agendada exitosamente. ID: ${response.id_cita}. Se le ha asignado el Médico ID: ${response.id_medico_asignado}.`);
+        this.resetearFlujo();
+        this.currentView = 'selection'; // Volver a la selección de opciones
+      },
+      error: (err) => {
+        console.error('Error al agendar:', err);
+        alert('Error: ' + (err.error?.error || 'No se pudo agendar la cita.'));
+      }
+    });
+  }
+
+  resetearFlujo(): void {
+      this.pasoActual = 1;
+      this.selectedDate = null;
+      this.selectedHour = null;
+      this.idServicioSeleccionado = null;
+      this.nombreServicioSeleccionado = '';
+      this.notasCita = '';
+      this.horasOcupadas = [];
+      this.generarCalendario();
   }
 }

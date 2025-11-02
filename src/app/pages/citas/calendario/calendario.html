@@ -1,81 +1,150 @@
 <div class="calendario-container">
-  <h2>Agendar Cita</h2>
+  <h2>Gestión de Citas</h2>
 
-  <!-- Calendario personalizado -->
-  <div class="calendario-custom">
-    <div class="calendario-header">
-      <button 
-        type="button" 
-        class="nav-button" 
-        (click)="previousMonth()"
-        [disabled]="!canNavigateToPrevious()"
-      >
-        ←
-      </button>
-      <h3 class="mes-año">{{ getCurrentMonthYear() }}</h3>
-      <button 
-        type="button" 
-        class="nav-button" 
-        (click)="nextMonth()"
-        [disabled]="!canNavigateToNext()"
-      >
-        →
-      </button>
-    </div>
-
-    <div class="dias-semana">
-      <div class="dia-semana" *ngFor="let dia of diasSemana">{{ dia }}</div>
-    </div>
-
-    <div class="dias-grid">
-      <div 
-        *ngFor="let dia of diasCalendario" 
-        class="dia-celda"
-        [class.dia-otro-mes]="!dia.esDelMesActual"
-        [class.dia-hoy]="dia.esHoy"
-        [class.dia-seleccionado]="dia.estaSeleccionado"
-        [class.dia-disponible]="dia.estaDisponible && dia.esDelMesActual"
-        [class.dia-no-disponible]="!dia.estaDisponible && dia.esDelMesActual"
-        (click)="seleccionarDia(dia)"
-      >
-        {{ dia.numero }}
+  <div class="opcion-selection" *ngIf="currentView === 'selection'">
+    <p class="subtitle">Selecciona la acción que deseas realizar:</p>
+    <div class="opcion-cards">
+      
+      <div class="opcion-card" (click)="selectView('agendar')">
+        <div class="opcion-icon">📅</div>
+        <h3>Agendar Nueva Cita</h3>
+        <p>Busca disponibilidad y reserva tu próxima consulta.</p>
       </div>
+      
+      <div class="opcion-card" (click)="selectView('mis-citas')">
+        <div class="opcion-icon">📋</div>
+        <h3>Mis Citas</h3>
+        <p>Consulta tus citas agendadas y realiza cancelaciones.</p>
+      </div>
+      
     </div>
   </div>
 
-  <!-- Horas disponibles -->
-  <div class="horas" *ngIf="selectedDate">
-    <h3>Horas disponibles - {{ getFormattedSelectedDate() }}</h3>
-    <div class="horas-grid">
+  <div *ngIf="currentView === 'agendar'">
+    <button type="button" class="btn-back" (click)="volverASeleccion()">← Volver a Selección</button>
+    
+    <div class="progress-bar">
+      <span [class.active]="pasoActual >= 1">1. Servicio</span>
+      <span [class.active]="pasoActual >= 2">2. Fecha y Hora</span>
+      <span [class.active]="pasoActual >= 3">3. Confirmación</span>
+    </div>
+
+    <div class="paso-card" *ngIf="pasoActual === 1">
+      <h3>Selecciona el Servicio que deseas agendar</h3>
+      
+      <div *ngIf="servicios.length === 0" class="loading-message">
+        Cargando servicios o no hay servicios disponibles.
+      </div>
+
+      <div class="servicios-grid">
+        <div 
+          *ngFor="let servicio of servicios" 
+          class="tarjeta-servicio"
+          (click)="seleccionarServicio(servicio)"
+        >
+          <h4>{{ servicio.Nombre }}</h4>
+          <p>{{ servicio.Descripcion }}</p>
+          <div class="servicio-info">
+              <span>🕒 {{ servicio.Duracion }} min</span>
+              <span class="costo">${{ servicio.Costo | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="paso-card" *ngIf="pasoActual === 2">
+      <div class="header-paso">
+        <button class="btn-back" (click)="pasoActual = 1">← Volver</button>
+        <h3>Servicio Seleccionado: <strong>{{ nombreServicioSeleccionado }}</strong></h3>
+      </div>
+      
+      <div class="seleccion-fecha-hora">
+        
+        <div class="calendario-columna">
+          <div class="calendario-header">
+            <button type="button" class="nav-button" (click)="previousMonth()" [disabled]="!canNavigateToPrevious()">←</button>
+            <h4 class="mes-año">{{ getCurrentMonthYear() }}</h4>
+            <button type="button" class="nav-button" (click)="nextMonth()" [disabled]="!canNavigateToNext()">→</button>
+          </div>
+
+          <div class="dias-semana">
+            <div class="dia-semana" *ngFor="let dia of diasSemana">{{ dia }}</div>
+          </div>
+
+          <div class="dias-grid">
+            <div 
+              *ngFor="let dia of diasCalendario" 
+              class="dia-celda"
+              [class.dia-otro-mes]="!dia.esDelMesActual"
+              [class.dia-seleccionado]="dia.estaSeleccionado"
+              [class.dia-disponible]="dia.estaDisponible && dia.esDelMesActual"
+              [class.dia-no-disponible]="!dia.estaDisponible || !dia.esDelMesActual"
+              [class.dia-hoy]="dia.esHoy"
+              (click)="seleccionarDia(dia)"
+            >
+              {{ dia.numero }}
+            </div>
+          </div>
+        </div>
+
+        <div class="horas-columna">
+          <h4 *ngIf="!selectedDate">Selecciona un día en el calendario.</h4>
+          <h4 *ngIf="selectedDate">Horas para el {{ getFormattedSelectedDate() }}</h4>
+          
+          <div class="horas-grid">
+            <button 
+              *ngFor="let hora of horasDisponibles" 
+              [class.selected]="hora === selectedHour"
+              [class.disabled]="!isHoraDisponible(hora)"
+              [disabled]="!isHoraDisponible(hora)"
+              (click)="seleccionarHora(hora)"
+              type="button"
+            >
+              {{ hora }}
+            </button>
+          </div>
+          
+          <button 
+            *ngIf="selectedDate && selectedHour"
+            (click)="pasoActual = 3" 
+            class="btn-continuar"
+            type="button"
+          >
+            Continuar →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="paso-card" *ngIf="pasoActual === 3">
+      <div class="header-paso">
+        <button class="btn-back" (click)="pasoActual = 2">← Modificar</button>
+        <h3>Confirma tu Cita</h3>
+      </div>
+
+      <div class="cita-resumen-final">
+          <p class="resumen-item"><strong>Servicio:</strong> <span>{{ nombreServicioSeleccionado }}</span></p>
+          <p class="resumen-item"><strong>Fecha:</strong> <span>{{ getFormattedSelectedDate() }}</span></p>
+          <p class="resumen-item"><strong>Hora:</strong> <span>{{ selectedHour }}</span></p>
+      </div>
+
+      <div class="notas-container">
+        <label for="notasCita">Notas o comentarios para el médico (Opcional):</label>
+        <textarea id="notasCita" [(ngModel)]="notasCita" rows="3" placeholder="Ej: Es mi primera visita."></textarea>
+      </div>
+      
       <button 
-        *ngFor="let hora of horasDisponibles" 
-        [class.selected]="hora === selectedHour"
-        [class.disabled]="!isHoraDisponible(hora)"
-        [disabled]="!isHoraDisponible(hora)"
-        (click)="seleccionarHora(hora)"
+        (click)="confirmarCita()" 
+        class="btn-confirmar-final"
         type="button"
       >
-        {{ hora }}
+        Confirmar y Agendar
       </button>
     </div>
   </div>
 
-  <!-- Mensaje de confirmación -->
-  <div *ngIf="selectedDate && selectedHour" class="confirmacion">
-    <div class="cita-resumen">
-      <div class="icono-calendario">📅</div>
-      <div class="cita-detalles">
-        <p><strong>Fecha:</strong> {{ getFormattedSelectedDate() }}</p>
-        <p><strong>Hora:</strong> {{ selectedHour }}</p>
-      </div>
-    </div>
-    
-    <button 
-      (click)="confirmarCita()" 
-      class="btn-confirmar"
-      type="button"
-    >
-      Confirmar Cita
-    </button>
+  <div *ngIf="currentView === 'mis-citas'">
+      <button type="button" class="btn-back" (click)="volverASeleccion()">← Volver a Selección</button>
+      <app-mis-citas></app-mis-citas>
   </div>
 </div>

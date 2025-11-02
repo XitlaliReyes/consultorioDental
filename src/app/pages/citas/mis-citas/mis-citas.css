@@ -1,0 +1,122 @@
+:root {
+    --color-azul-principal: #337ab7;
+    --color-fondo-claro: #f5f7fa;
+    --color-texto: #333;
+    --color-cancelada: #dc3545;
+    --color-confirmada: #28a745;
+    --radius: 8px;
+}
+
+.citas-listado {
+    padding: 15px;
+}
+
+.citas-listado h3 {
+    color: var(--color-azul-principal);
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--color-fondo-claro);
+    padding-bottom: 10px;
+}
+
+.cita-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #d0dbe6;
+    padding: 20px;
+    border-radius: var(--radius);
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.servicio-nombre {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--color-azul-principal);
+}
+
+.cita-estado {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: white;
+}
+
+.cita-estado.confirmada {
+    background-color: var(--color-confirmada);
+}
+
+.cita-estado.cancelada {
+    background-color: var(--color-cancelada); 
+}
+
+.cita-info p {
+    margin: 4px 0;
+    color: var(--color-texto);
+}
+
+.cita-acciones {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cita-acciones button {
+    padding: 10px 15px;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-cancelar {
+    background-color: var(--color-cancelada);
+    color: white;
+    border: 1px solid var(--color-cancelada);
+}
+
+.btn-cancelar:hover {
+    background-color: #c82333;
+}
+
+.btn-no-cancelar {
+    background-color: #f8f9fa;
+    color: #999;
+    border: 1px solid #ccc;
+    cursor: not-allowed;
+}
+
+.cancelada-msg {
+    color: var(--color-cancelada);
+    font-weight: 600;
+}
+
+.mensaje-info, .mensaje-error {
+    text-align: center;
+    padding: 15px;
+    border-radius: var(--radius);
+    margin: 20px 0;
+    font-size: 1em;
+}
+
+.mensaje-info {
+    background-color: #e9f5fe;
+    color: var(--color-azul-principal);
+}
+
+.mensaje-error {
+    background-color: #f8d7da;
+    color: var(--color-cancelada);
+}
+
+@media (max-width: 600px) {
+    .cita-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .cita-acciones {
+        margin-top: 15px;
+    }
+}

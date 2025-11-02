@@ -1,323 +1,402 @@
-/* Contenedor principal */
+/* VARIABLES DE COLOR AJUSTADAS */
+:root {
+ 
+  
+  --color-texto: #333;
+  --color-texto-secundario: #666;
+  --color-borde: #d0dbe6;          /* Borde de tarjetas y elementos */
+  --color-deshabilitado: #e9ecef;  /* Gris claro para deshabilitados */
+  --color-confirmacion: var(--color-azul-principal); /* Usaremos el azul para confirmar */
+  --radius: 12px;
+}
+
+/* -----------------------------------
+ CONTENEDOR GLOBAL Y TÍTULOS
+ ----------------------------------- */
 .calendario-container {
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 2rem;
-  background: var(--card);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--border);
+  max-width: 950px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Título */
-.calendario-container h2 {
-  color: var(--card-foreground);
-  margin: 0 0 2rem 0;
+h2 {
+  color: #337ab7;
   text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
 }
 
-/* Calendario personalizado */
-.calendario-custom {
-  background: var(--background);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  overflow: hidden;
-  margin-bottom: 2rem;
+h3 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: 500;
+  border-bottom: 1px solid #d0dbe6;
+  padding-bottom: 10px;
 }
 
-/* Header del calendario */
-.calendario-header {
+/* -----------------------------------
+ INDICADOR DE PROGRESO
+ ----------------------------------- */
+.progress-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  color: #666;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.progress-bar span {
+  padding: 5px 10px;
+  border-bottom: 3px solid #d0dbe6;
+  transition: all 0.3s;
+}
+
+.progress-bar span.active {
+  color: #337ab7;
+  border-color: #337ab7;
+  font-weight: 600;
+}
+
+/* -----------------------------------
+ PASO CARD BASE
+ ----------------------------------- */
+.paso-card {
+  background-color: #f5f7fa;
+  padding: 25px;
+  border-radius: var(--radius);
+  border: 1px solid #d0dbe6;
+  margin-bottom: 20px; /* Separación entre pasos si fueran visibles */
+}
+
+.header-paso {
   display: flex;
   align-items: center;
+  margin-bottom: 15px;
+}
+
+.header-paso h3 {
+  margin-left: 20px;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.btn-back {
+  background: none;
+  border: 1px solid #d0dbe6;
+  color: #666;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  background-color: #e9ecef;
+}
+
+/* -----------------------------------
+ PASO 1: SERVICIOS
+ ----------------------------------- */
+.servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.tarjeta-servicio {
+  padding: 20px;
+  border: 2px solid #d0dbe6;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.tarjeta-servicio:hover {
+  border-color: #5c9cd6;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.tarjeta-servicio-seleccionada { /* Nuevo estilo para destacar el servicio */
+  border-color: #337ab7;
+  background-color: #c2e0f8;
+  box-shadow: 0 4px 15px rgba(51, 122, 183, 0.2);
+}
+
+.tarjeta-servicio h4 {
+  color: #337ab7;
+  font-size: 1.1em;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.tarjeta-servicio p {
+  color: #666;
+  font-size: 0.9em;
+  margin-bottom: 15px;
+  min-height: 40px; 
+}
+
+.servicio-info {
+  display: flex;
   justify-content: space-between;
-  padding: 1rem;
-  background: var(--accent);
-  border-bottom: 1px solid var(--border);
+  align-items: center;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+.servicio-info .costo {
+  color: #337ab7;
+}
+
+/* -----------------------------------
+ PASO 2: FECHA Y HORA
+ ----------------------------------- */
+
+.seleccion-fecha-hora {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr;
+  gap: 25px;
+}
+
+.calendario-columna {
+  padding: 15px;
+  border-right: 1px solid #d0dbe6;
+}
+
+.horas-columna {
+  padding: 15px 0 15px 15px;
+}
+
+.calendario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .mes-año {
-  color: var(--accent-foreground);
-  margin: 0;
+  font-size: 1.2em;
   font-weight: 600;
-  min-width: 140px;
-  text-align: center;
+  color: #337ab7;
 }
 
 .nav-button {
-  width: 36px;
-  height: 36px;
+  background: none;
   border: none;
-  background: var(--background);
-  color: var(--foreground);
-  border-radius: var(--radius-sm);
+  font-size: 1.2em;
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-}
-
-.nav-button:hover:not(:disabled) {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  color: #337ab7;
+  transition: opacity 0.2s;
 }
 
 .nav-button:disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
-/* Días de la semana */
+/* DÍAS */
 .dias-semana {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  background: var(--muted);
-  border-bottom: 1px solid var(--border);
-}
-
-.dia-semana {
-  padding: 0.75rem 0.5rem;
   text-align: center;
-  color: var(--muted-foreground);
-  font-size: 0.875rem;
   font-weight: 600;
+  color: #337ab7;
+  margin-bottom: 10px;
+  font-size: 0.9em;
 }
 
-/* Grid de días */
 .dias-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
 }
 
 .dia-celda {
-  aspect-ratio: 1;
+  aspect-ratio: 1 / 1;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  border-radius: 8px; /* Usamos esquinas redondeadas, no círculos */
+  font-size: 0.9em;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  background: var(--background);
-  color: var(--foreground);
-  font-size: 0.875rem;
-  position: relative;
+  transition: all 0.2s;
 }
 
-.dia-celda:nth-child(7n) {
-  border-right: none;
-}
-
-.dia-celda:nth-last-child(-n+7) {
-  border-bottom: none;
-}
-
-/* Estados de los días */
-.dia-otro-mes {
-  color: var(--muted-foreground);
-  background: var(--muted);
+.dia-otro-mes, .dia-no-disponible {
+  color: #666;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.dia-hoy {
-  background: var(--secondary);
-  color: var(--secondary-foreground);
-  font-weight: 600;
-}
-
-.dia-seleccionado {
-  background: var(--primary) !important;
-  color: var(--primary-foreground) !important;
-  font-weight: 600;
+.dia-disponible {
+  color: color-texto;
+  font-weight: 500;
 }
 
 .dia-disponible:hover {
-  background: var(--accent);
-  color: var(--accent-foreground);
+  background-color: #c2e0f8;
+  color: color-texto;
 }
 
-.dia-no-disponible {
-  color: var(--muted-foreground);
-  cursor: not-allowed;
-  opacity: 0.5;
+.dia-hoy {
+  border: 2px solid #337ab7;
+  font-weight: bold;
 }
 
-.dia-no-disponible::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 1px;
-  height: 70%;
-  background: var(--muted-foreground);
-  transform: translate(-50%, -50%) rotate(45deg);
+.dia-seleccionado {
+  /* MISMO ESTILO QUE EL BOTÓN DE LA PLANTILLA 'la.jpg' */
+  background-color: #337ab7 !important;
+  color: white !important;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(51, 122, 183, 0.4);
 }
 
-/* Sección de horas */
-.horas h3 {
-  color: var(--card-foreground);
-  margin: 0 0 1rem 0;
-  text-align: center;
-}
-
+/* HORAS */
 .horas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 0;
+  max-height: 350px;
+  overflow-y: auto;
 }
 
-/* Botones de hora */
 .horas-grid button {
-  padding: 0.75rem 0.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--background);
-  color: var(--muted-foreground);
+  /* Estilo de botones de hora sin seleccionar */
+  background-color: white;
+  color: #337ab7;
+  border: 1px solid #c2e0f8;
+  padding: 8px 15px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: all 0.2s;
+  font-weight: 500;
 }
 
-.horas-grid button:hover:not(:disabled) {
-  background: var(--accent);
-  color: var(--accent-foreground);
-  border-color: var(--ring);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.horas-grid button:not(.disabled):hover {
+  background-color: #c2e0f8;
+  border-color: #337ab7;
 }
 
-.horas-grid button:active {
-  transform: translateY(0);
-}
-
-/* Estado seleccionado */
 .horas-grid button.selected {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: var(--primary-foreground);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* ESTILO DE HORA SELECCIONADA */
+  background-color: #337ab7;
+  color: white;
+  border-color: var(--color-azul-principal);
+  font-weight: 600;
 }
 
-.horas-grid button.selected:hover {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: var(--primary-foreground);
-  opacity: 0.9;
-}
-
-/* Botones deshabilitados */
-.horas-grid button:disabled,
 .horas-grid button.disabled {
-  background: var(--muted);
-  border-color: var(--border);
-  color: var(--muted-foreground);
+  background-color: #e9ecef;
+  color: #999;
+  border-color: #ccc;
   cursor: not-allowed;
-  opacity: 0.5;
-  transform: none;
+  text-decoration: none;
 }
 
-/* Sección de confirmación */
-.confirmacion {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: var(--accent);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-}
-
-.cita-resumen {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.icono-calendario {
-  font-size: 2rem;
-  opacity: 0.8;
-}
-
-.cita-detalles {
-  flex: 1;
-}
-
-.cita-detalles p {
-  color: var(--accent-foreground);
-  margin: 0.25rem 0;
-  font-size: 0.875rem;
-}
-
-.cita-detalles strong {
-  font-weight: 600;
-}
-
-/* Botón de confirmar */
-.btn-confirmar {
-  width: 100%;
-  padding: 1rem 2rem;
-  background: var(--primary);
-  color: var(--primary-foreground);
+.btn-continuar {
+  /* Botón de Continuar en Paso 2 */
+  background-color: #5c9cd6;
+  color: white;
   border: none;
-  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s;
+  font-size: 1em;
+  margin-top: 20px;
+  width: 100%;
   font-weight: 600;
-  font-size: 1rem;
 }
 
-.btn-confirmar:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.btn-continuar:hover {
+  background-color: #337ab7;
 }
 
-.btn-confirmar:active {
-  transform: translateY(0);
+/* -----------------------------------
+ PASO 3: CONFIRMACIÓN
+ ----------------------------------- */
+.cita-resumen-final p {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #d0dbe6;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 1.1em;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
+.cita-resumen-final strong {
+  color: #337ab7;
+}
+
+.notas-container {
+  margin-top: 20px;
+}
+
+.notas-container label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: color-texto;
+}
+
+.notas-container textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d0dbe6;
+  border-radius: 8px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.btn-confirmar-final {
+  /* Botón de Confirmar en Paso 3 - USANDO EL AZUL DE LA MARCA */
+  display: block;
+  width: 100%;
+  padding: 15px;
+  background-color: #337ab7; 
+  color: black;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 25px;
+  font-weight: 600;
+}
+
+.btn-confirmar-final:hover {
+  background-color: #2a6496; /* Azul ligeramente más oscuro */
+}
+
+/* MEDIA QUERIES para pantallas pequeñas (móviles) */
+@media (max-width: 768px) {
   .calendario-container {
-    margin: 1rem;
-    padding: 1.5rem;
+      margin: 20px;
+      padding: 15px;
   }
-  
-  .calendario-header {
-    padding: 0.75rem;
+  .seleccion-fecha-hora {
+      grid-template-columns: 1fr; /* Una columna para el calendario y las horas */
   }
-  
-  .mes-año {
-    font-size: 1rem;
-    min-width: 120px;
+  .calendario-columna {
+      border-right: none;
+      border-bottom: 1px solid #d0dbe6;
+      margin-bottom: 15px;
   }
-  
-  .nav-button {
-    width: 32px;
-    height: 32px;
-    font-size: 1rem;
+  .horas-columna {
+      padding-left: 0;
   }
-  
-  .dia-semana {
-    padding: 0.5rem 0.25rem;
-    font-size: 0.75rem;
-  }
-  
-  .dia-celda {
-    font-size: 0.75rem;
-  }
-  
-  .horas-grid {
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-    gap: 0.5rem;
-  }
-  
-  .horas-grid button {
-    padding: 0.625rem 0.25rem;
-    font-size: 0.75rem;
+  .servicios-grid {
+      grid-template-columns: 1fr;
   }
 }

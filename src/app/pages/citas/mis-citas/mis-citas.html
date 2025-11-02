@@ -1,0 +1,55 @@
+<div class="citas-listado">
+    <h3>Citas Pendientes e Historial</h3>
+
+    <div *ngIf="loading" class="mensaje-info">
+        Cargando tus citas...
+    </div>
+
+    <div *ngIf="error" class="mensaje-error">
+        {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error">
+        <div *ngIf="citas.length === 0" class="mensaje-info">
+            <p>No tienes citas agendadas. ¡Agenda tu próxima cita ahora!</p>
+        </div>
+
+        <div *ngFor="let cita of citas" class="cita-card">
+            <div class="cita-info">
+                <div class="cita-header">
+                    <span class="servicio-nombre">{{ cita.Servicio }}</span>
+                    <span class="cita-estado" [ngClass]="{
+                        'confirmada': cita.Estado !== 'Cancelada',
+                        'cancelada': cita.Estado === 'Cancelada'
+                    }">
+                        {{ cita.Estado }}
+                    </span>
+                </div>
+                
+                <p><strong>Fecha:</strong> {{ cita.Fecha_Cita | date: 'fullDate' }}</p>
+                <p><strong>Hora:</strong> {{ cita.Hora_Cita | slice:0:5 }} hrs</p>
+                <p><strong>Médico:</strong> Dr(a). {{ cita.Nombre_Medico }} {{ cita.Apellidos_Medico || '' }}</p>
+            </div>
+
+            <div class="cita-acciones">
+                <button 
+                    *ngIf="canCancel(cita)"
+                    (click)="cancelarCita(cita.ID_Cita)"
+                    class="btn-cancelar"
+                    type="button"
+                >
+                    Cancelar Cita
+                </button>
+                <button 
+                    *ngIf="cita.Estado !== 'Cancelada' && !canCancel(cita)"
+                    class="btn-no-cancelar"
+                    disabled
+                    type="button"
+                >
+                    Plazo Vencido
+                </button>
+                <span *ngIf="cita.Estado === 'Cancelada'" class="cancelada-msg">Cita cancelada</span>
+            </div>
+        </div>
+    </div>
+</div>
