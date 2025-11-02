@@ -1,14 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { AuthService } from '@auth0/auth0-angular';
+import { Api } from '../../../services/api';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class Home {
+export class Home implements OnInit {
+  private auth = inject(AuthService);
+  private api = inject(Api);
   
+  userName: string = '';
+  userEmail: string = '';
 
   images = [
     { src: 'https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8', alt: 'Consultorio dental moderno' },
@@ -17,8 +24,31 @@ export class Home {
   ];
   current = 0;
 
-  next() { this.current = (this.current + 1) % this.images.length; }
-  prev() { this.current = (this.current - 1 + this.images.length) % this.images.length; }
+  ngOnInit() {
+    // Obtener información del usuario
+    this.api.getRole().subscribe({
+  next: (response) => {   // response tiene tipo ProfileRoleResponse | null
+    if (response) {       // filtramos null
+      this.userName = response.nombre;
+      this.userEmail = response.correo || '';
+    } else {
+      console.warn('No hay datos de usuario');
+    }
+  },
+  error: (error: any) => {
+    console.error('Error al obtener datos del usuario:', error);
+  }
+});
+
+  }
+
+  next() { 
+    this.current = (this.current + 1) % this.images.length; 
+  }
+  
+  prev() { 
+    this.current = (this.current - 1 + this.images.length) % this.images.length; 
+  }
   
   trackByTitle(index: number, service: any): string {
     return service.title;
@@ -62,4 +92,7 @@ export class Home {
       image: "https://images.unsplash.com/photo-1675526607070-f5cbd71dde92?w=300&h=300&fit=crop"
     }
   ];
+
+  
+  
 }

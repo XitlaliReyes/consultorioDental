@@ -10,8 +10,10 @@
     <nav class="navbar-nav">
       <a href="home" class="nav-link">Inicio</a>
       <a href="nosotros" class="nav-link">Nosotros</a>
-      <a href="contacto" class="nav-link">Contacto</a>
       <a href="citas" class="nav-link">Agendar Cita</a>
+      <a *ngIf="isAuthenticated$ | async" (click)="logout()" class="nav-link logout-btn">
+        Cerrar Sesión 🚪
+      </a>
     </nav>
 
   </div>

@@ -1,51 +1,30 @@
 <section class="login-page">
-    <div class="login-container">
-      <!-- Columna izquierda -->
-      <div class="login-form">
-        <h2>Bienvenido a <br /> Sonrisas Felices</h2>
-  
-        <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="form">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              name="email" 
-              [(ngModel)]="email" 
-              required 
-              placeholder="Ingresa tu email"
-            />
-          </div>
-  
-          <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input 
-              type="password" 
-              id="password" 
-              name="password" 
-              [(ngModel)]="password" 
-              required 
-              placeholder="Ingresa tu contraseña"
-            />
-          </div>
-  
-          <button 
-            type="submit" 
-            class="login-btn" 
-            [disabled]="!loginForm.form.valid"
-          >
-            Ingresar
-          </button>
-        </form>
-  
-        <div class="register-link">
-          <a [routerLink]="['/register']">¿No tienes cuenta? Registrarme</a>
-        </div>
-      </div>
-  
-      <!-- Columna derecha -->
-      <div class="login-image">
-        <img src="/src/app/images/logdental.jpg" alt="Sonrisas Felices" class="main-image">
+  <div class="login-container">
+    <!-- Columna izquierda -->
+    <div class="login-form">
+      <h2>Bienvenido a <br /> Sonrisas Felices</h2>
+
+    
+      <button 
+        type="button" 
+        class="login-btn" 
+        (click)="onLogin()"
+      >
+        Ingresar
+      </button>
+
+      <div class="register-link">
+        <!-- 
+          Cambiamos el routerLink por la función onRegister()
+          para ir directamente al formulario de registro de Auth0.
+        -->
+        <a (click)="onRegister()">¿No tienes cuenta? Registrarme</a>
       </div>
     </div>
-  </section>
+
+    <!-- Columna derecha -->
+    <div class="login-image">
+      <img src="/images/logdental.jpg" alt="Sonrisas Felices" class="main-image">
+    </div>
+  </div>
+</section>

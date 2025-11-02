@@ -1,0 +1,139 @@
+<div class="onboarding-container">
+    <div class="onboarding-card">
+      <h1>Completa tu Perfil</h1>
+      <p class="subtitle">Para brindarte la mejor experiencia, necesitamos saber más sobre ti</p>
+  
+      <!-- Selección de Rol -->
+      <div class="role-selection" *ngIf="!selectedRole">
+        <h2>¿Cómo deseas usar la plataforma?</h2>
+        <div class="role-cards">
+          <div class="role-card" (click)="selectRole('Paciente')">
+            <div class="role-icon">👤</div>
+            <h3>Soy Paciente</h3>
+            <p>Busco atención dental y gestionar mis citas</p>
+          </div>
+          <div class="role-card" (click)="selectRole('Medico')">
+            <div class="role-icon">👨‍⚕️</div>
+            <h3>Soy Médico</h3>
+            <p>Quiero gestionar pacientes y consultas</p>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Formulario para Paciente -->
+      <form *ngIf="selectedRole === 'Paciente'" (ngSubmit)="onSubmit()" class="profile-form">
+        <h2>Información del Paciente</h2>
+        
+        <div class="form-group">
+          <label>Nombre Completo *</label>
+          <input type="text" [(ngModel)]="pacienteData.nombre" name="nombre" required>
+        </div>
+  
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sexo *</label>
+            <select [(ngModel)]="pacienteData.sexo" name="sexo" required>
+              <option value="">Seleccionar</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+          </div>
+  
+          <div class="form-group">
+            <label>Fecha de Nacimiento *</label>
+            <input type="date" [(ngModel)]="pacienteData.fechaNacimiento" name="fechaNacimiento" required>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label>Dirección *</label>
+          <input type="text" [(ngModel)]="pacienteData.direccion" name="direccion" required>
+        </div>
+  
+        <div class="form-row">
+          <div class="form-group">
+            <label>Código Postal *</label>
+            <input type="text" [(ngModel)]="pacienteData.codigoPostal" name="codigoPostal" required>
+          </div>
+  
+          <div class="form-group">
+            <label>Ciudad *</label>
+            <input type="text" [(ngModel)]="pacienteData.ciudad" name="ciudad" required>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label>Ocupación</label>
+          <input type="text" [(ngModel)]="pacienteData.ocupacion" name="ocupacion">
+        </div>
+  
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teléfono *</label>
+            <input type="tel" [(ngModel)]="pacienteData.telefono" name="telefono" required>
+          </div>
+  
+          <div class="form-group">
+            <label>Correo *</label>
+            <input type="email" [(ngModel)]="pacienteData.correo" name="correo" required>
+          </div>
+        </div>
+  
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="selectedRole = null" [disabled]="isSubmitting">Atrás</button>
+          <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Registrando...' : 'Registrar Perfil' }}
+          </button>
+        </div>
+      </form>
+  
+      <!-- Formulario para Médico -->
+      <form *ngIf="selectedRole === 'Medico'" (ngSubmit)="onSubmit()" class="profile-form">
+        <h2>Información del Médico</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" [(ngModel)]="medicoData.nombre" name="nombre" required>
+          </div>
+  
+          <div class="form-group">
+            <label>Apellidos *</label>
+            <input type="text" [(ngModel)]="medicoData.apellidos" name="apellidos" required>
+          </div>
+        </div>
+  
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teléfono *</label>
+            <input type="tel" [(ngModel)]="medicoData.telefono" name="telefono" required>
+          </div>
+  
+          <div class="form-group">
+            <label>Correo *</label>
+            <input type="email" [(ngModel)]="medicoData.correo" name="correo" required>
+          </div>
+        </div>
+  
+        <div class="form-row">
+          <div class="form-group">
+            <label>Cédula Profesional *</label>
+            <input type="text" [(ngModel)]="medicoData.cedula" name="cedula" required>
+          </div>
+  
+          <div class="form-group">
+            <label>Años de Experiencia *</label>
+            <input type="number" [(ngModel)]="medicoData.experiencia" name="experiencia" min="0" required>
+          </div>
+        </div>
+  
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="selectedRole = null" [disabled]="isSubmitting">Atrás</button>
+          <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Registrando...' : 'Registrar Perfil' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
