@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 // ¡NUEVA IMPORTACIÓN! Necesaria para la vista 'mis-citas'
 import { MisCitasComponent } from '../mis-citas/mis-citas'; 
+import { AuthService } from '@auth0/auth0-angular';
+import { catchError, of, switchMap } from 'rxjs';
 
 // Interfaces (Se mantienen igual)
 interface Servicio {
@@ -65,7 +67,9 @@ export class Calendario implements OnInit {
     '16:00', '16:30', '17:00'
   ];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+    private auth: AuthService
+  ) { }
 
   ngOnInit(): void {
     // Solo cargamos servicios si estamos en la vista 'agendar' o en el paso 1
@@ -262,31 +266,41 @@ export class Calendario implements OnInit {
     return !this.horasOcupadas.includes(hora);
   }
 
-  confirmarCita(): void {
-    if (!this.selectedDate || !this.selectedHour || !this.idServicioSeleccionado) {
-      console.error('Faltan datos para confirmar la cita.');
-      return;
-    }
+  // Reemplazar el método confirmarCita():
+confirmarCita(): void {
+  if (!this.selectedDate || !this.selectedHour || !this.idServicioSeleccionado) {
+    console.error('Faltan datos para confirmar la cita.');
+    return;
+  }
 
-    const datosCita = {
-      fecha: this.selectedDate.toISOString().split('T')[0],
-      hora: this.selectedHour + ':00',
-      id_servicio: this.idServicioSeleccionado,
-      notas: this.notasCita
-    };
+  const datosCita = {
+    fecha: this.selectedDate.toISOString().split('T')[0],
+    hora: this.selectedHour + ':00',
+    id_servicio: this.idServicioSeleccionado,
+    notas: this.notasCita
+  };
 
-    this.http.post<CitaResponse>(`${this.apiUrl}/api/citas/agendar`, datosCita).subscribe({
-      next: (response) => {
+  // Obtener el token y hacer la petición autenticada
+  this.auth.getAccessTokenSilently().pipe(
+    switchMap((token: any) => {
+      const headers = { Authorization: `Bearer ${token}` };
+      return this.http.post<CitaResponse>(`${this.apiUrl}/api/citas/agendar`, datosCita, { headers });
+    }),
+    catchError((err: { error: { error: any; }; }) => {
+      console.error('Error al agendar:', err);
+      alert('Error: ' + (err.error?.error || 'No se pudo agendar la cita.'));
+      return of(null);
+    })
+  ).subscribe({
+    next: (response) => {
+      if (response) {
         alert(`Cita agendada exitosamente. ID: ${response.id_cita}. Se le ha asignado el Médico ID: ${response.id_medico_asignado}.`);
         this.resetearFlujo();
-        this.currentView = 'selection'; // Volver a la selección de opciones
-      },
-      error: (err) => {
-        console.error('Error al agendar:', err);
-        alert('Error: ' + (err.error?.error || 'No se pudo agendar la cita.'));
+        this.currentView = 'selection';
       }
-    });
-  }
+    }
+  });
+}
 
   resetearFlujo(): void {
       this.pasoActual = 1;
