@@ -35,7 +35,7 @@ interface CitaResponse {
   selector: 'app-calendario',
   standalone: true,
   // ¡IMPORTANTE! Agregar MisCitasComponent y HttpClientModule
-  imports: [FormsModule, DatePipe, CommonModule, HttpClientModule, MisCitasComponent], 
+  imports: [FormsModule, CommonModule, HttpClientModule, MisCitasComponent], 
   templateUrl: './calendario.html',
   styleUrls: ['./calendario.css']
 })
