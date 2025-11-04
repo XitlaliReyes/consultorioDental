@@ -1,162 +1,579 @@
+/* Reset y base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .dashboard-container {
-    display: flex;
-    min-height: 100vh;
-    background: #f5f7fa;
-  }
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ========== SIDEBAR ========== */
+/* ========== SIDEBAR (Actualizado) ========== */
+.sidebar {
+  /* Fondo blanco para el estilo minimalista */
+  width: 260px;
+  background: white;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  /* Sombra suave */
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+}
+
+.sidebar-header {
+  /* Fondo de degradado azul claro para el encabezado */
+  background: linear-gradient(180deg, #d4e8f7 0%, #b8d9f0 100%);
+  padding: 30px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-header h2 {
+  /* Color de texto más oscuro sobre fondo claro */
+  color: #333;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.sidebar-nav {
+  padding: 20px 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  margin: 4px 0; /* Sin margen horizontal para que el indicador de actividad se alinee */
+  color: #555; /* Texto gris/oscuro por defecto */
+  text-decoration: none;
+  border-left: 5px solid transparent; /* Espacio para el indicador de actividad */
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-size: 0.95rem;
+  position: relative;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background: #f7f7f7; /* Fondo muy claro al pasar el ratón */
+  color: #357abd; /* Color del texto a un azul */
+}
+
+/* ESTADO ACTIVO (Clave para el nuevo diseño) */
+.nav-item.active {
+  background: #eaf3fb; /* Fondo azul muy claro */
+  color: #357abd; /* Color del texto azul oscuro */
+  font-weight: 700;
+  /* Indicador lateral azul (como la línea verde de tu imagen de ejemplo) */
+  border-left: 5px solid;
+  border-image: linear-gradient(180deg, #d4e8f7 0%, #357abd 100%) 1;
+}
+
+.nav-item .icon {
+  font-size: 1.2rem;
+}
+
+.notification-badge {
+  /* Mantenemos el rojo para las notificaciones */
+  background: #e74c3c;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+.logout {
+  margin-top: 30px;
+  padding-top: 20px;
+  /* Separador gris claro */
+  border-top: 1px solid #eee;
+  color: #555;
+}
+
+.logout:hover {
+  /* Rojo claro para salir */
+  background: #fff0f0; 
+  color: #e74c3c;
+}
+
+/* ========== MAIN CONTENT ========== */
+.main-content {
+  margin-left: 260px;
+  flex: 1;
+  padding: 30px;
+  max-width: 100%;
+}
+
+/* ========== HEADER ========== */
+.dashboard-header {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-header h1 {
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.user-email {
+  color: #95a5a6;
+  font-size: 0.95rem;
+}
+
+/* ========== STATS GRID ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #d4e8f7 0%, #b8d9f0 100%);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.15);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(74, 144, 226, 0.1);
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.25);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.stat-info h3 {
+  color: #2c3e50;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.stat-number {
+  color: #2c3e50;
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+}
+/* ========== CARD BASE & HEADER (Ajustes Mínimos) ========== */
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px; /* Más espacio */
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-title {
+  color: #2c3e50;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* Ajuste del botón de refrescar para que sea un ícono simple */
+.btn-refresh {
+  background: none;
+  color: #357abd;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  color: #2c3e50;
+}
+
+
+/* ========== CONTENEDOR DE CITAS (Apariencia tipo lista) ========== */
+.citas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Espacio vertical entre las tarjetas apiladas */
+}
+
+.cita-card {
+  /* Diseño de la tarjeta: fondo muy claro, bordes redondeados y sombra sutil (como la imagen) */
+  display: flex;
+  background: #fafafa; /* Fondo ligeramente gris para contraste */
+  border-radius: 12px;
+  padding: 0; /* Quitamos el padding aquí y lo ponemos dentro de los bloques */
+  overflow: hidden;
+  transition: background 0.2s;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05); /* Sombra muy sutil */
+}
+
+.cita-card:hover {
+  background: #f0f0f0;
+}
+
+/* Bloque para Fecha y Hora (El bloque de color) */
+.cita-header {
+  /* Estilo de ícono y hora/fecha, similar al diseño de actividad de la imagen */
+  width: 80px; /* Ancho fijo para el área de la hora/ícono */
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 5px;
   
+  /* Degradado de azul que solicitaste */
+  background: linear-gradient(180deg, #d4e8f7 0%, #b8d9f0 100%);
+  color: #b9daf3; /* Color del texto para contrastar */
+}
+
+.cita-header .fecha {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 5px; 
+  color: white;/* Espacio entre fecha y hora */
+}
+
+.cita-header .hora {
+  font-size: 0.8rem; /* Hora más pequeña como pediste */
+  font-weight: 500;
+  opacity: 0.9;
+  color: white;
+}
+
+/* Bloque de Contenido de la Cita (Fondo blanco) */
+.cita-body {
+  flex-grow: 1; /* Ocupa el espacio restante */
+  padding: 15px 20px;
+  background: white; /* Aseguramos que el fondo sea blanco dentro de la tarjeta */
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-left: 1px solid #f0f0f0; /* Separador sutil */
+}
+
+/* Estilos para la Jerarquía de Información */
+.cita-body .paciente-nombre {
+  font-size: 1.15rem; /* Nombre del paciente en grande */
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+
+.cita-body .contacto {
+  font-size: 0.85rem; /* Teléfono y Servicio en pequeño */
+  color: #7f8c8d;
+  font-weight: 500;
+}
+.cita-body .servicio{
+  font-size: 0.95rem; /* Teléfono y Servicio en pequeño */
+  color: #4f595a;
+  font-weight: 500;
+}
+.cita-notas {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  border-top: 1px solid #f0f0f0;
+  color: #555;
+  background: #fcfcfc;
+}
+
+/* ========== LOADING ========== */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #ecf0f1;
+  border-top: 4px solid #b9daf3;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading p {
+  color: #95a5a6;
+  font-size: 1rem;
+}
+
+/* ========== EMPTY STATE ========== */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  opacity: 0.4;
+}
+
+.empty h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.empty p {
+  color: #95a5a6;
+  font-size: 1rem;
+  margin-bottom: 25px;
+}
+
+.btn-primary {
+  padding: 14px 30px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #357abd;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+}
+
+/* ========== CITAS LIST ========== */
+.citas-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.cita-card {
+  background: white;
+  border: 2px solid #ecf0f1;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cita-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-color: #4a90e2;
+}
+
+.cita-header {
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fecha-box {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px 15px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.dia {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.mes {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+
+.hora-box {
+  background: white;
+  color: #4a90e2;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.cita-body {
+  padding: 20px;
+}
+
+.servicio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.servicio-icon {
+  font-size: 1.1rem;
+}
+
+.paciente {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.paciente-info {
+  flex: 1;
+}
+
+.paciente-info h4 {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.paciente-info p {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.notas {
+  background: #fffbea;
+  border-left: 4px solid #ffc107;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.notas strong {
+  color: #856404;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.notas p {
+  color: #856404;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.cita-footer {
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #ecf0f1;
+}
+
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #27ae60;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .citas-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
   .sidebar {
-    width: 260px;
-    background: linear-gradient(135deg, #667eea 0%, #337ab7 100%);
-    color: white;
-    padding: 20px;
-    position: fixed;
-    height: 100vh;
-    overflow-y: auto;
+    width: 100%;
+    position: relative;
+    height: auto;
   }
-  
-  .sidebar-header {
-    padding: 20px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 20px;
-  }
-  
-  .sidebar-header h2 {
-    margin: 0;
-    font-size: 1.5em;
-  }
-  
-  .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 8px;
-    color: white;
-    text-decoration: none;
-    transition: all 0.3s;
-  }
-  
-  .nav-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  
-  .nav-item.active {
-    background: rgba(255, 255, 255, 0.2);
-  }
-  
-  .nav-item.logout {
-    margin-top: 20px;
-    cursor: pointer;
-  }
-  
-  .icon {
-    font-size: 1.2em;
-  }
-  
+
   .main-content {
-    margin-left: 260px;
-    flex: 1;
-    padding: 30px;
+    margin-left: 0;
+    padding: 20px;
   }
-  
-  .dashboard-header {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .dashboard-header h1 {
-    margin: 0 0 5px 0;
-    color: #333;
-    font-size: 1.8em;
-  }
-  
-  .user-email {
-    color: #666;
-    font-size: 0.9em;
-  }
-  
+
   .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
+    grid-template-columns: 1fr;
   }
-  
-  .stat-card {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
+
+  .citas-list {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 15px;
   }
-  
-  .stat-icon {
-    font-size: 3em;
+
+  .btn-refresh {
+    width: 100%;
+    justify-content: center;
   }
-  
-  .stat-info h3 {
-    margin: 0 0 5px 0;
-    color: #666;
-    font-size: 0.9em;
-    font-weight: 500;
+
+  .dashboard-header h1 {
+    font-size: 1.5rem;
   }
-  
-  .stat-number {
-    margin: 0;
-    font-size: 2em;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .content-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px;
-  }
-  
-  .card {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .card-title {
-    margin: 0 0 20px 0;
-    color: #333;
-    font-size: 1.3em;
-  }
-  
-  .empty-state {
-    text-align: center;
-    padding: 40px;
-    color: #999;
-  }
-  
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 100%;
-      height: auto;
-      position: relative;
-    }
-  
-    .main-content {
-      margin-left: 0;
-    }
-  
-    .content-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
+}

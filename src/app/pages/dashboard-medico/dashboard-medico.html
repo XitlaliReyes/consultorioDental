@@ -1,87 +1,123 @@
 <div class="dashboard-container">
-    <aside class="sidebar">
-      <div class="sidebar-header">
+  <aside class="sidebar">
+    <div class="sidebar-header">
         <h2> Panel Médico</h2>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item active">
-          <span class="icon"></span> Dashboard
+    </div>
+    <nav class="sidebar-nav">
+        <div class="menu-label">MENU</div> 
+        
+        <a (click)="navegarA('dashboard')" 
+           [class.active]="vistaActual === 'dashboard'" 
+           class="nav-item">
+            <span class="icon fa-solid fa-gauge"></span> Dashboard 
+        </a>
+        <a (click)="navegarA('citas')" 
+           [class.active]="vistaActual === 'citas'" 
+           class="nav-item">
+            <span class="icon fa-regular fa-calendar-alt"></span> Citas
+            <span *ngIf="totalCitasPendientes > 0" class="notification-badge">
+                {{ totalCitasPendientes }}
+            </span>
         </a>
         <a href="#" class="nav-item">
-          <span class="icon"></span> Pacientes
+            <span class="icon fa-solid fa-users"></span> Pacientes
         </a>
         <a href="#" class="nav-item">
-          <span class="icon"></span> Citas
+            <span class="icon fa-regular fa-clipboard-list"></span> Historiales
         </a>
-        <a href="#" class="nav-item">
-          <span class="icon"></span> Historiales
-        </a>
-        <a href="#" class="nav-item">
-          <span class="icon"></span> Configuración
-        </a>
+
+        
         <a class="nav-item logout" (click)="logout()">
-          <span class="icon"></span> Cerrar Sesión
+            <span class="icon fa-solid fa-right-from-bracket"></span> Cerrar Sesión
         </a>
-      </nav>
-    </aside>
-  
-    <main class="main-content">
+    </nav>
+</aside>
+
+  <main class="main-content">
+    <!-- Vista Dashboard -->
+    <div *ngIf="vistaActual === 'dashboard'">
       <header class="dashboard-header">
         <div>
           <h1>Bienvenido, Dr. {{ medicoNombre }} {{ medicoApellidos }}</h1>
           <span class="user-email">{{ medicoCorreo }}</span>
         </div>
       </header>
-  
+
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <div class="stat-info">
-            <h3>Pacientes</h3>
-            <p class="stat-number">0</p>
-          </div>
-        </div>
-  
         <div class="stat-card">
           <div class="stat-icon">📅</div>
           <div class="stat-info">
-            <h3>Citas Hoy</h3>
-            <p class="stat-number">0</p>
+            <h3>Citas Asignadas</h3>
+            <p class="stat-number">{{ misCitas.length }}</p>
           </div>
         </div>
-  
-        <div class="stat-card">
-          <div class="stat-icon">✅</div>
-          <div class="stat-info">
-            <h3>Completadas</h3>
-            <p class="stat-number">0</p>
-          </div>
-        </div>
-  
+      
         <div class="stat-card">
           <div class="stat-icon">⏰</div>
           <div class="stat-info">
+            <h3>Citas Hoy</h3>
+            <p class="stat-number">{{ citasHoy }}</p>
+          </div>
+        </div>
+      
+        <div class="stat-card">
+          <div class="stat-icon">🔔</div>
+          <div class="stat-info">
             <h3>Pendientes</h3>
-            <p class="stat-number">0</p>
+            <p class="stat-number">{{ totalCitasPendientes }}</p>
+          </div>
+        </div>
+      
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <h3>Esta Semana</h3>
+            <p class="stat-number">{{ citasEstaSemana }}</p>
           </div>
         </div>
       </div>
-  
+
       <div class="content-grid">
         <section class="card">
-          <h2 class="card-title">Próximas Citas</h2>
-          <div class="empty-state">
-            <p> No hay citas programadas para hoy</p>
-          </div>
+            <div class="card-header">
+                <h2 class="card-title">Próximas Citas</h2>
+                <button class="btn-refresh" (click)="cargarMisCitas()">🔄</button>
+            </div>
+            
+            <div *ngIf="isLoadingCitas" class="loading-state">
+                <p>Cargando citas...</p>
+            </div>
+    
+            <div *ngIf="!isLoadingCitas && misCitas.length === 0" class="empty-state">
+                <p> No tienes citas asignadas</p>
+            </div>
+    
+            <div *ngIf="!isLoadingCitas && misCitas.length > 0" class="citas-container">
+                <div *ngFor="let cita of misCitas" class="cita-card">
+                    <div class="cita-header">
+                        <span class="fecha">{{ formatearFecha(cita.Fecha) }}</span>
+                        <span class="hora">{{ formatearHora(cita.Hora) }}</span>
+                    </div>
+                    
+                    <div class="cita-body">
+                        <p class="paciente-nombre">{{ cita.Paciente_Nombre }}</p>
+                        
+                        <p class="servicio">Servicio: {{ cita.Servicio }}</p>
+                        <p class="contacto">Teléfono: {{ cita.Paciente_Telefono }}</p>
+                    </div>
+                    
+                    <div *ngIf="cita.Notas" class="cita-notas">
+                        📝 Notas: {{ cita.Notas }}
+                    </div>
+                </div>
+            </div>
         </section>
-  
-        <section class="card">
-          <h2 class="card-title">Pacientes Recientes</h2>
-          <div class="empty-state">
-            <p> No hay pacientes registrados aún</p>
-          </div>
-        </section>
-      </div>
-    </main>
-  </div>
-  
+    </div>
+    </div>
+
+    <!-- Vista Citas -->
+    <div *ngIf="vistaActual === 'citas'">
+      <app-citas-medico></app-citas-medico>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,66 @@
+<div class="citas-container">
+    <header class="citas-header">
+      <h1>Gestión de Citas</h1>
+      <p class="subtitle">Revisa y acepta las citas pendientes</p>
+    </header>
+  
+    <div class="citas-content">
+      <div *ngIf="isLoading" class="loading">
+        <p>Cargando citas...</p>
+      </div>
+  
+      <div *ngIf="!isLoading && serviciosConCitas.length === 0" class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3>No hay citas pendientes</h3>
+        <p>Actualmente no hay citas sin asignar</p>
+      </div>
+  
+      <div *ngIf="!isLoading && serviciosConCitas.length > 0" class="servicios-grid">
+        <div *ngFor="let servicio of serviciosConCitas" class="servicio-card">
+            <div class="servicio-header">
+                <h2>{{ servicio.nombre }}</h2>
+                <span class="badge">{{ servicio.citas.length }} citas</span>
+            </div>
+            <p class="servicio-descripcion">{{ servicio.descripcion }}</p>
+            <p class="servicio-duracion">⏱️ Duración: {{ servicio.duracion }} minutos</p>
+    
+            <div class="citas-list">
+                <div *ngFor="let cita of servicio.citas" class="cita-item">
+                    <div class="cita-info">
+                        
+                        <div class="cita-fecha">
+                            <span class="icon">📅</span>
+                            <strong>{{ formatearFecha(cita.fecha) }}</strong>
+                            <span class="hora">{{ formatearHora(cita.hora) }}</span>
+                        </div>
+    
+                        <div class="paciente-info">
+                            <p class="paciente-nombre">{{ cita.paciente.nombre }}</p>
+                            
+                            <p class="paciente-detalle">
+                                <strong> Teléfono:</strong> {{ cita.paciente.telefono }}
+                            </p>
+                            <p class="paciente-detalle">
+                                <strong> Correo:</strong> {{ cita.paciente.correo }}
+                            </p>
+                        </div>
+    
+                        <div *ngIf="cita.notas" class="cita-notas">
+                            <strong>📝 Notas:</strong>
+                            <p>{{ cita.notas }}</p>
+                        </div>
+                    </div>
+    
+                    <button
+                        class="btn-aceptar"
+                        (click)="aceptarCita(cita.id_cita)"
+                        [disabled]="procesandoCita === cita.id_cita">
+                        {{ procesandoCita === cita.id_cita ? 'Procesando...' : 'Aceptar Cita' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+  </div>
+  

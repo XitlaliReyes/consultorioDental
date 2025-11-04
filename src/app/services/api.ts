@@ -15,26 +15,57 @@ export interface ProfileRoleResponse {
   auth0Id: string;
 }
 
+export interface CitaPendiente {
+  id_cita: number;
+  fecha: string;
+  hora: string;
+  estado: string;
+  notas: string;
+  paciente: {
+    nombre: string;
+    telefono: string;
+    correo: string;
+  };
+}
+
+export interface ServicioConCitas {
+  id_servicio: number;
+  nombre: string;
+  descripcion: string;
+  duracion: number;
+  citas: CitaPendiente[];
+}
+
+export interface CitaMedico {
+  ID_Cita: number;
+  Fecha: string;
+  Hora: string;
+  Estado: string;
+  Notas: string;
+  Servicio: string;
+  Paciente_Nombre: string;
+  Paciente_Telefono: string;
+  Paciente_Correo: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class Api {
   private http = inject(HttpClient);
-  private auth = inject(AuthService); // Inyectamos el servicio de Auth0
+  private auth = inject(AuthService);
 
-  private API_URL = 'http://localhost:3000/api/profile'; // URL base para las rutas de perfil
+  private API_URL = 'http://localhost:3000/api'; // URL base general
 
   // 1. Obtiene el rol del usuario autenticado
   getRole(): Observable<ProfileRoleResponse | null> {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
-        // Añadimos el token como cabecera de autorización Bearer
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.get<ProfileRoleResponse>(`${this.API_URL}/get-role`, { headers });
+        return this.http.get<ProfileRoleResponse>(`${this.API_URL}/profile/get-role`, { headers });
       }),
       catchError(error => {
         console.error('Error al obtener el rol o token no disponible:', error);
-        // Si hay error (ej. token expira o no hay token), devolvemos null
         return of(null);
       })
     );
@@ -46,12 +77,50 @@ export class Api {
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
         const payload = { rol, data };
-        return this.http.post(`${this.API_URL}/register`, payload, { headers });
+        return this.http.post(`${this.API_URL}/profile/register`, payload, { headers });
       })
     );
   }
 
-  // Puedes mantener otras rutas de prueba si quieres
+  // 3. Obtiene todas las citas pendientes agrupadas por servicio (para médicos)
+  getCitasPendientes(): Observable<ServicioConCitas[]> {
+    return this.auth.getAccessTokenSilently().pipe(
+      switchMap(token => {
+        const headers = { Authorization: `Bearer ${token}` };
+        return this.http.get<ServicioConCitas[]>(`${this.API_URL}/citas/pendientes`, { headers });
+      }),
+      catchError(error => {
+        console.error('Error al obtener citas pendientes:', error);
+        return of([]);
+      })
+    );
+  }
+
+  // 4. Permite al médico aceptar una cita
+  aceptarCita(idCita: number): Observable<any> {
+    return this.auth.getAccessTokenSilently().pipe(
+      switchMap(token => {
+        const headers = { Authorization: `Bearer ${token}` };
+        return this.http.post(`${this.API_URL}/citas/aceptar/${idCita}`, {}, { headers });
+      })
+    );
+  }
+
+  // 5. Obtiene las citas asignadas al médico
+  getMisCitasMedico(): Observable<CitaMedico[]> {
+    return this.auth.getAccessTokenSilently().pipe(
+      switchMap(token => {
+        const headers = { Authorization: `Bearer ${token}` };
+        return this.http.get<CitaMedico[]>(`${this.API_URL}/citas/mis-citas-medico`, { headers });
+      }),
+      catchError(error => {
+        console.error('Error al obtener citas del médico:', error);
+        return of([]);
+      })
+    );
+  }
+
+  // Rutas de prueba
   getServidorStatus(): Observable<any> {
     return this.http.get(`http://localhost:3000/`);
   }

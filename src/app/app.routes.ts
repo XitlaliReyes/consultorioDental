@@ -6,6 +6,7 @@ import { Login } from './pages/public/login/login';
 import { CallbackComponent } from './pages/callback/callback';
 import { Onboarding } from './pages/onboarding/onboarding';
 import { AuthGuard } from './guards/auth.guard';
+import { CitasMedico } from './pages/citas/citas-medico/citas-medico';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -30,6 +31,12 @@ export const routes: Routes = [
       {
         path: 'dashboard-medico',
         loadComponent: () => import('./pages/dashboard-medico/dashboard-medico').then(m => m.DashboardMedicoComponent),
+        canActivate: [AuthGuard]
+      },
+      
+      {
+        path: 'citas-medico',
+        component: CitasMedico,
         canActivate: [AuthGuard]
       },
       {
