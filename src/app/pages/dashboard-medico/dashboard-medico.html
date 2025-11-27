@@ -94,24 +94,40 @@
             </div>
     
             <div *ngIf="!isLoadingCitas && misCitas.length > 0" class="citas-container">
-                <div *ngFor="let cita of misCitas" class="cita-card">
-                    <div class="cita-header">
-                        <span class="fecha">{{ formatearFecha(cita.Fecha) }}</span>
-                        <span class="hora">{{ formatearHora(cita.Hora) }}</span>
-                    </div>
-                    
-                    <div class="cita-body">
-                        <p class="paciente-nombre">{{ cita.Paciente_Nombre }}</p>
+              <div *ngFor="let cita of misCitas" class="cita-card">
+                  <div class="cita-header">
+                      <span class="fecha">{{ formatearFecha(cita.Fecha) }}</span>
+                      <span class="hora">{{ formatearHora(cita.Hora) }}</span>
+                      
+                     
+                  </div>
+                  
+                  <div class="cita-body">
+                      <p class="paciente-nombre">{{ cita.Paciente_Nombre }}</p>
+                      
+                      <p class="servicio">Servicio: {{ cita.Servicio }}</p>
+                      <p class="contacto">Teléfono: {{ cita.Paciente_Telefono }}</p>
+                  </div>
+                  
+                  <div *ngIf="cita.Notas" class="cita-notas">
+                      📝 Notas: {{ cita.Notas }}
+                  </div>
+          
+                  <div class="cita-acciones">
+                    <button
+                        *ngIf="cita.Estado === 'Agendada'"
                         
-                        <p class="servicio">Servicio: {{ cita.Servicio }}</p>
-                        <p class="contacto">Teléfono: {{ cita.Paciente_Telefono }}</p>
-                    </div>
+                        class="btn-aceptar-cita-dashboard" 
+                
+                        (click)="aceptarCita(cita.ID_Cita)"
+                        [disabled]="procesandoCita === cita.ID_Cita"
+                    >
+                        {{ procesandoCita === cita.ID_Cita ? 'Confirmando...' : 'Aceptar Cita' }}
+                    </button>
                     
-                    <div *ngIf="cita.Notas" class="cita-notas">
-                        📝 Notas: {{ cita.Notas }}
                     </div>
-                </div>
-            </div>
+                  </div>
+          </div>
         </section>
     </div>
     </div>

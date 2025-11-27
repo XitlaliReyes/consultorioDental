@@ -164,7 +164,17 @@ export class Api {
       })
     );
   }
-
+  
+  //8. el medico confirma la cita asignada 
+  confirmarCita(idCita: number): Observable<any> {
+    return this.auth.getAccessTokenSilently().pipe(
+      switchMap(token => {
+        const headers = { Authorization: `Bearer ${token}` };
+        // Llama a la nueva ruta
+        return this.http.post(`${this.API_URL}/citas/confirmar/${idCita}`, {}, { headers });
+      })
+    );
+  }
   // Rutas de prueba
   getServidorStatus(): Observable<any> {
     return this.http.get(`http://localhost:3000/`);

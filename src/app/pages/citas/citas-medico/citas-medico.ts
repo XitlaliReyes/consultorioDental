@@ -54,7 +54,7 @@ export class CitasMedico implements OnInit {
   }
 
   formatearFecha(fecha: string): string {
-    const date = new Date(fecha);
+    const date = new Date(fecha + 'T00:00:00');
     const opciones: Intl.DateTimeFormatOptions = { 
       weekday: 'long', 
       year: 'numeric', 

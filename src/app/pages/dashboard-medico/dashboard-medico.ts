@@ -30,6 +30,7 @@ export class DashboardMedicoComponent implements OnInit {
   totalCitasPendientes = 0;
   citasHoy = 0;
   citasEstaSemana = 0;
+  procesandoCita: number | null = null;
   
   // NUEVAS PROPIEDADES PARA PACIENTES
   misPacientes: PacienteBasico[] = [];
@@ -158,18 +159,64 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
   formatearFecha(fecha: string): string {
-    const date = new Date(fecha + 'T00:00:00'); // Añadir T00:00:00 para evitar problemas de zona horaria
+    // 1. Verificación de seguridad
+    if (!fecha || fecha.length < 10) {
+      return 'Fecha Desconocida';
+    }
+
+    // 2. 🔥 SOLUCIÓN FINAL: ANÁLISIS MANUAL
+    // Separamos la cadena (ej. '2025-12-20') en partes.
+    const partes = fecha.split('-');
+    
+    // Convertimos las partes a números enteros.
+    // Restamos 1 al mes porque en JavaScript los meses van de 0 (Enero) a 11 (Diciembre).
+    const año = parseInt(partes[0], 10);
+    const mesIndex = parseInt(partes[1], 10) - 1; 
+    const dia = parseInt(partes[2], 10);
+    
+    // Creamos el objeto Date con las partes (forzando la interpretación como hora local).
+    const date = new Date(año, mesIndex, dia); 
+    
+    // 3. Comprobación de que la fecha es válida (para atrapar errores de parseo)
+    if (isNaN(date.getTime())) {
+      console.error('La cadena de fecha falló el análisis manual:', fecha);
+      return 'Fecha Inválida'; 
+    }
+
     const opciones: Intl.DateTimeFormatOptions = {
-      year: 'numeric', // Añadir año para la fecha de nacimiento
+      year: 'numeric',
       month: 'long',
       day: 'numeric'
     };
+    
     return date.toLocaleDateString('es-ES', opciones);
   }
 
   formatearHora(hora: string): string {
     return hora.substring(0, 5);
   }
+  
+  aceptarCita(idCita: number) {
+    if (confirm('¿Estás seguro de que deseas confirmar esta cita?')) {
+        this.procesandoCita = idCita; // Activa el "Procesando..." en el botón
+        
+        // ** CAMBIO AQUÍ **: Usar el nuevo método del servicio
+        this.api.confirmarCita(idCita).subscribe({
+            next: () => {
+                alert('¡Cita confirmada exitosamente! Se ha enviado el correo al paciente.');
+                this.procesandoCita = null;
+                // Recarga la lista para que el estado se actualice y el botón desaparezca
+                this.cargarMisCitas(); 
+            },
+            error: (error) => {
+                console.error('Error al confirmar la cita:', error);
+                // Aquí podrías mostrar el mensaje de error que viene del backend
+                alert(`Error al confirmar la cita: ${error.error?.error || 'Error de conexión'}`);
+                this.procesandoCita = null;
+            }
+        });
+    }
+}
 
   logout() {
     this.auth.logout({
