@@ -2,18 +2,25 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-// ¡NUEVA IMPORTACIÓN! Necesaria para la vista 'mis-citas'
 import { MisCitasComponent } from '../mis-citas/mis-citas'; 
 import { AuthService } from '@auth0/auth0-angular';
 import { catchError, of, switchMap } from 'rxjs';
 
-// Interfaces (Se mantienen igual)
+// Interfaces
 interface Servicio {
   ID_Servicio: number;
   Nombre: string;
   Descripcion: string;
   Duracion: number;
   Costo: number;
+}
+
+interface Medico {
+  ID_Medico: number;
+  Nombre: string;
+  Apellidos: string;
+  // Especialidad: string;
+  // Telefono: string;
 }
 
 interface DiaCalendario {
@@ -28,13 +35,11 @@ interface DiaCalendario {
 interface CitaResponse {
   message: string;
   id_cita: number;
-  id_medico_asignado: number;
 }
 
 @Component({
   selector: 'app-calendario',
   standalone: true,
-  // ¡IMPORTANTE! Agregar MisCitasComponent y HttpClientModule
   imports: [FormsModule, CommonModule, HttpClientModule, MisCitasComponent], 
   templateUrl: './calendario.html',
   styleUrls: ['./calendario.css']
@@ -43,20 +48,26 @@ export class Calendario implements OnInit {
 
   private apiUrl = 'http://localhost:3000';
 
-  // ** NUEVA PROPIEDAD: Controla la vista principal (selección, agendar, mis-citas) **
+  // Control de vista principal
   currentView: 'selection' | 'agendar' | 'mis-citas' = 'selection';
 
-  // Propiedades de Agendamiento (Se mantienen igual)
+  // Propiedades de Agendamiento (ahora con médico)
   selectedDate: Date | null = null;
   selectedHour: string | null = null;
-  pasoActual: number = 1;
+  pasoActual: number = 1; // Ahora: 1=Médico, 2=Servicio, 3=Fecha/Hora, 4=Confirmación
+  
+  medicos: Medico[] = [];
+  idMedicoSeleccionado: number | null = null;
+  nombreMedicoSeleccionado: string = '';
+  
   servicios: Servicio[] = [];
   idServicioSeleccionado: number | null = null;
   nombreServicioSeleccionado: string = '';
+  
   horasOcupadas: string[] = [];
   notasCita: string = '';
 
-  // Propiedades de Calendario (Se mantienen igual)
+  // Propiedades de Calendario
   currentMonth: Date = new Date();
   diasCalendario: DiaCalendario[] = [];
   diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
@@ -67,40 +78,81 @@ export class Calendario implements OnInit {
     '16:00', '16:30', '17:00'
   ];
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     private auth: AuthService
   ) { }
 
   ngOnInit(): void {
-    // Solo cargamos servicios si estamos en la vista 'agendar' o en el paso 1
     if (this.currentView === 'agendar' || this.pasoActual === 1) { 
-        this.cargarServicios(); 
+      this.cargarMedicos(); 
     }
     this.generarCalendario();
   }
   
   // ===================================
-  // ** LÓGICA DE NAVEGACIÓN DE VISTAS (NUEVA) **
+  // LÓGICA DE NAVEGACIÓN DE VISTAS
   // ===================================
 
   selectView(view: 'agendar' | 'mis-citas'): void {
     this.currentView = view;
-    // Si vamos a Agendar, aseguramos cargar los servicios y reiniciar el flujo
     if (view === 'agendar') {
-      this.cargarServicios();
-      this.resetearFlujo(); // Esto asegura que 'pasoActual' sea 1
+      this.cargarMedicos();
+      this.resetearFlujo();
     }
   }
 
   volverASeleccion(): void {
     this.currentView = 'selection';
-    this.resetearFlujo(); // Opcional, pero buena práctica
+    this.resetearFlujo();
   }
 
   // ===================================
-  // LÓGICA DE CALENDARIO Y NAVEGACIÓN (Se mantiene igual)
+  // LÓGICA DE SELECCIÓN: MÉDICO Y SERVICIO
   // ===================================
-  // ... (previousMonth, nextMonth, canNavigateToPrevious, canNavigateToNext, getCurrentMonthYear, getFormattedSelectedDate, generarCalendario, se mantienen igual) ...
+
+  cargarMedicos(): void {
+    this.http.get<Medico[]>(`${this.apiUrl}/api/medicos`).subscribe({
+      next: (data) => {
+        this.medicos = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar médicos:', err);
+      }
+    });
+  }
+
+  seleccionarMedico(medico: Medico): void {
+    this.idMedicoSeleccionado = medico.ID_Medico;
+    this.nombreMedicoSeleccionado = `${medico.Nombre} ${medico.Apellidos}`;
+    this.pasoActual = 2;
+    this.cargarServicios(); // Cargar servicios al seleccionar médico
+  }
+
+  cargarServicios(): void {
+    this.http.get<Servicio[]>(`${this.apiUrl}/api/servicios`).subscribe({
+      next: (data) => {
+        this.servicios = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar servicios:', err);
+      }
+    });
+  }
+
+  seleccionarServicio(servicio: Servicio): void {
+    this.idServicioSeleccionado = servicio.ID_Servicio;
+    this.nombreServicioSeleccionado = servicio.Nombre;
+    this.pasoActual = 3;
+  }
+
+  getNombreCompletoMedico(medico: Medico): string {
+    return `Dr(a). ${medico.Nombre} ${medico.Apellidos}`;
+  }
+
+  // ===================================
+  // LÓGICA DE CALENDARIO Y NAVEGACIÓN
+  // ===================================
 
   previousMonth() {
     if (!this.canNavigateToPrevious()) return;
@@ -139,14 +191,25 @@ export class Calendario implements OnInit {
     return `${meses[this.currentMonth.getMonth()]} ${this.currentMonth.getFullYear()}`;
   }
 
+  onMedicoDropdownChange(): void {
+  const medico = this.medicos.find(m => m.ID_Medico === Number(this.idMedicoSeleccionado));
+
+  if (medico) {
+    this.nombreMedicoSeleccionado = medico.Nombre + ' ' + medico.Apellidos;
+    this.pasoActual = 2;
+    this.cargarServicios(); // Ya lo tienes implementado
+  }
+}
+
+
   getFormattedSelectedDate(): string {
     if (!this.selectedDate) return '';
     const date = this.selectedDate;
     const options: Intl.DateTimeFormatOptions = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
     };
     return date.toLocaleDateString('es-ES', options);
   }
@@ -208,44 +271,27 @@ export class Calendario implements OnInit {
   }
 
   // ===================================
-  // LÓGICA DE AGENDAMIENTO Y CONEXIÓN API (Se mantiene igual)
+  // LÓGICA DE AGENDAMIENTO Y CONEXIÓN API
   // ===================================
 
-  seleccionarServicio(servicio: Servicio): void {
-      this.idServicioSeleccionado = servicio.ID_Servicio;
-      this.nombreServicioSeleccionado = servicio.Nombre;
-      this.pasoActual = 2;
-  }
+  getHorasOcupadas(idMedico: number, fecha: Date): void {
+    const fechaFormateada = fecha.toISOString().split('T')[0];
 
-  cargarServicios(): void {
-      this.http.get<Servicio[]>(`${this.apiUrl}/api/servicios`).subscribe({
-          next: (data) => {
-              this.servicios = data;
-          },
-          error: (err) => {
-              console.error('Error al cargar servicios:', err);
-          }
-      });
-  }
-
-  getHorasOcupadas(idServicio: number, fecha: Date): void {
-      const fechaFormateada = fecha.toISOString().split('T')[0];
-
-      this.http.get<{ horas_ocupadas: { hora: string }[] }>(
-          `${this.apiUrl}/api/citas/disponibilidad/${idServicio}/${fechaFormateada}`
-      ).subscribe({
-          next: (res) => {
-              this.horasOcupadas = res.horas_ocupadas.map(c => c.hora);
-          },
-          error: (err) => {
-              console.error('Error al cargar disponibilidad:', err);
-              this.horasOcupadas = [];
-          }
-      });
+    this.http.get<{ horas_ocupadas: { hora: string }[] }>(
+      `${this.apiUrl}/api/citas/disponibilidad/${idMedico}/${fechaFormateada}`
+    ).subscribe({
+      next: (res) => {
+        this.horasOcupadas = res.horas_ocupadas.map(c => c.hora);
+      },
+      error: (err) => {
+        console.error('Error al cargar disponibilidad:', err);
+        this.horasOcupadas = [];
+      }
+    });
   }
 
   seleccionarDia(dia: DiaCalendario): void {
-    if (this.pasoActual !== 2) return;
+    if (this.pasoActual !== 3) return;
     if (!dia.esDelMesActual || !dia.estaDisponible) return;
 
     this.diasCalendario.forEach((d: DiaCalendario) => d.estaSeleccionado = false);
@@ -253,8 +299,8 @@ export class Calendario implements OnInit {
     this.selectedDate = dia.fecha;
     this.selectedHour = null;
 
-    if (this.selectedDate && this.idServicioSeleccionado) {
-        this.getHorasOcupadas(this.idServicioSeleccionado, this.selectedDate);
+    if (this.selectedDate && this.idMedicoSeleccionado) {
+      this.getHorasOcupadas(this.idMedicoSeleccionado, this.selectedDate);
     }
   }
 
@@ -266,50 +312,52 @@ export class Calendario implements OnInit {
     return !this.horasOcupadas.includes(hora);
   }
 
-  // Reemplazar el método confirmarCita():
-confirmarCita(): void {
-  if (!this.selectedDate || !this.selectedHour || !this.idServicioSeleccionado) {
-    console.error('Faltan datos para confirmar la cita.');
-    return;
+  confirmarCita(): void {
+    if (!this.selectedDate || !this.selectedHour || !this.idServicioSeleccionado || !this.idMedicoSeleccionado) {
+      console.error('Faltan datos para confirmar la cita.');
+      alert('Por favor, completa todos los pasos antes de confirmar.');
+      return;
+    }
+
+    const datosCita = {
+      fecha: this.selectedDate.toISOString().split('T')[0],
+      hora: this.selectedHour + ':00',
+      id_servicio: this.idServicioSeleccionado,
+      id_medico: this.idMedicoSeleccionado,
+      notas: this.notasCita
+    };
+
+    this.auth.getAccessTokenSilently().pipe(
+      switchMap((token: any) => {
+        const headers = { Authorization: `Bearer ${token}` };
+        return this.http.post<CitaResponse>(`${this.apiUrl}/api/citas/agendar`, datosCita, { headers });
+      }),
+      catchError((err: { error: { error: any; }; }) => {
+        console.error('Error al agendar:', err);
+        alert('Error: ' + (err.error?.error || 'No se pudo agendar la cita.'));
+        return of(null);
+      })
+    ).subscribe({
+      next: (response) => {
+        if (response) {
+          alert(`Cita agendada exitosamente. ID: ${response.id_cita}`);
+          this.resetearFlujo();
+          this.currentView = 'selection';
+        }
+      }
+    });
   }
 
-  const datosCita = {
-    fecha: this.selectedDate.toISOString().split('T')[0],
-    hora: this.selectedHour + ':00',
-    id_servicio: this.idServicioSeleccionado,
-    notas: this.notasCita
-  };
-
-  // Obtener el token y hacer la petición autenticada
-  this.auth.getAccessTokenSilently().pipe(
-    switchMap((token: any) => {
-      const headers = { Authorization: `Bearer ${token}` };
-      return this.http.post<CitaResponse>(`${this.apiUrl}/api/citas/agendar`, datosCita, { headers });
-    }),
-    catchError((err: { error: { error: any; }; }) => {
-      console.error('Error al agendar:', err);
-      alert('Error: ' + (err.error?.error || 'No se pudo agendar la cita.'));
-      return of(null);
-    })
-  ).subscribe({
-    next: (response) => {
-      if (response) {
-        alert(`Cita agendada exitosamente. ID: ${response.id_cita}. Se le ha asignado el Médico ID: ${response.id_medico_asignado}.`);
-        this.resetearFlujo();
-        this.currentView = 'selection';
-      }
-    }
-  });
-}
-
   resetearFlujo(): void {
-      this.pasoActual = 1;
-      this.selectedDate = null;
-      this.selectedHour = null;
-      this.idServicioSeleccionado = null;
-      this.nombreServicioSeleccionado = '';
-      this.notasCita = '';
-      this.horasOcupadas = [];
-      this.generarCalendario();
+    this.pasoActual = 1;
+    this.selectedDate = null;
+    this.selectedHour = null;
+    this.idMedicoSeleccionado = null;
+    this.nombreMedicoSeleccionado = '';
+    this.idServicioSeleccionado = null;
+    this.nombreServicioSeleccionado = '';
+    this.notasCita = '';
+    this.horasOcupadas = [];
+    this.generarCalendario();
   }
 }

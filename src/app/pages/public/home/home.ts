@@ -27,17 +27,17 @@ export class Home implements OnInit {
   ngOnInit() {
     // Obtener información del usuario
     this.api.getRole().subscribe({
-  next: (response) => {   // response tiene tipo ProfileRoleResponse | null
-    if (response) {       // filtramos null
-      this.userName = response.nombre;
-      this.userEmail = response.correo || '';
-    } else {
-      console.warn('No hay datos de usuario');
+    next: (response) => {   // response tiene tipo ProfileRoleResponse | null
+      if (response) {       // filtramos null
+        this.userName = response.nombre;
+        this.userEmail = response.correo || '';
+      } else {
+        console.warn('No hay datos de usuario');
+      }
+    },
+    error: (error: any) => {
+      console.error('Error al obtener datos del usuario:', error);
     }
-  },
-  error: (error: any) => {
-    console.error('Error al obtener datos del usuario:', error);
-  }
 });
 
   }
