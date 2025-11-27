@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
-import { Api, CitaMedico } from '../../services/api';
+// IMPORTAR LAS NUEVAS INTERFACES
+import { Api, CitaMedico, PacienteBasico, PacienteDetalle } from '../../services/api'; 
 import { Router } from '@angular/router';
 import { CitasMedico } from '../citas/citas-medico/citas-medico';
 
@@ -21,12 +22,22 @@ export class DashboardMedicoComponent implements OnInit {
   medicoApellidos: string = '';
   medicoCorreo: string = '';
   
-  vistaActual: 'dashboard' | 'citas' = 'dashboard';
+  // MODIFICAR TIPO DE VISTA ACTUAL
+  vistaActual: 'dashboard' | 'citas' | 'pacientes' | 'paciente-detalle' = 'dashboard';
+  
   misCitas: CitaMedico[] = [];
   isLoadingCitas = false;
   totalCitasPendientes = 0;
   citasHoy = 0;
   citasEstaSemana = 0;
+  
+  // NUEVAS PROPIEDADES PARA PACIENTES
+  misPacientes: PacienteBasico[] = [];
+  isLoadingPacientes = false;
+
+  pacienteSeleccionado: PacienteDetalle | null = null;
+  isLoadingDetalle = false;
+
 
   ngOnInit() {
     this.api.getRole().subscribe({
@@ -73,6 +84,42 @@ export class DashboardMedicoComponent implements OnInit {
       }
     });
   }
+  
+  // NUEVO MÉTODO: Cargar lista de pacientes
+  cargarMisPacientes() {
+    this.isLoadingPacientes = true;
+    this.api.getMisPacientes().subscribe({
+      next: (pacientes) => {
+        this.misPacientes = pacientes;
+        this.isLoadingPacientes = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar pacientes del médico:', error);
+        this.isLoadingPacientes = false;
+      }
+    });
+  }
+
+  // NUEVO MÉTODO: Ver detalle del paciente
+  verDetallePaciente(idPaciente: number) {
+    this.pacienteSeleccionado = null; // Limpiar vista anterior
+    this.vistaActual = 'paciente-detalle';
+    this.isLoadingDetalle = true;
+
+    this.api.getPacienteDetalle(idPaciente).subscribe({
+      next: (paciente) => {
+        this.pacienteSeleccionado = paciente;
+        this.isLoadingDetalle = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar detalle del paciente:', error);
+        this.isLoadingDetalle = false;
+        // Opcional: Volver a la lista si falla
+        alert('Error al cargar los detalles del paciente. Por favor, intente de nuevo.');
+        this.navegarA('pacientes'); 
+      }
+    });
+  }
 
   calcularEstadisticas() {
     const hoy = new Date();
@@ -96,17 +143,25 @@ export class DashboardMedicoComponent implements OnInit {
     }).length;
   }
 
-  navegarA(vista: 'dashboard' | 'citas') {
+  // MODIFICAR MÉTODO navegarA
+  navegarA(vista: 'dashboard' | 'citas' | 'pacientes' | 'paciente-detalle') {
     this.vistaActual = vista;
+    this.pacienteSeleccionado = null; // Limpiar detalle al cambiar de vista principal
+    
     if (vista === 'citas') {
       this.cargarCitasPendientes();
+    }
+    
+    if (vista === 'pacientes') {
+      this.cargarMisPacientes(); // Cargar la lista al entrar a la vista
     }
   }
 
   formatearFecha(fecha: string): string {
-    const date = new Date(fecha);
+    const date = new Date(fecha + 'T00:00:00'); // Añadir T00:00:00 para evitar problemas de zona horaria
     const opciones: Intl.DateTimeFormatOptions = {
-      month: 'short',
+      year: 'numeric', // Añadir año para la fecha de nacimiento
+      month: 'long',
       day: 'numeric'
     };
     return date.toLocaleDateString('es-ES', opciones);

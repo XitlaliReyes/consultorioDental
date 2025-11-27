@@ -4,7 +4,7 @@
         <h2> Panel Médico</h2>
     </div>
     <nav class="sidebar-nav">
-        <div class="menu-label">MENU</div> 
+        <div class="menu-label"></div> 
         
         <a (click)="navegarA('dashboard')" 
            [class.active]="vistaActual === 'dashboard'" 
@@ -19,7 +19,9 @@
                 {{ totalCitasPendientes }}
             </span>
         </a>
-        <a href="#" class="nav-item">
+        <a (click)="navegarA('pacientes')" 
+           [class.active]="vistaActual === 'pacientes' || vistaActual === 'paciente-detalle'" 
+           class="nav-item">
             <span class="icon fa-solid fa-users"></span> Pacientes
         </a>
         <a href="#" class="nav-item">
@@ -34,7 +36,6 @@
 </aside>
 
   <main class="main-content">
-    <!-- Vista Dashboard -->
     <div *ngIf="vistaActual === 'dashboard'">
       <header class="dashboard-header">
         <div>
@@ -115,9 +116,85 @@
     </div>
     </div>
 
-    <!-- Vista Citas -->
     <div *ngIf="vistaActual === 'citas'">
       <app-citas-medico></app-citas-medico>
+    </div>
+
+    <div *ngIf="vistaActual === 'pacientes'">
+        <header class="dashboard-header">
+            <h1>Mis Pacientes Asignados</h1>
+        </header>
+
+        <section class="card">
+            <div class="card-header">
+                <h2 class="card-title">Pacientes Únicos</h2>
+                <button class="btn-refresh" (click)="cargarMisPacientes()">🔄</button>
+            </div>
+
+            <div *ngIf="isLoadingPacientes" class="loading-state">
+                <p>Cargando lista de pacientes...</p>
+            </div>
+
+            <div *ngIf="!isLoadingPacientes && misPacientes.length === 0" class="empty-state">
+                <p>Aún no tienes pacientes asignados de citas no canceladas.</p>
+            </div>
+
+            <div *ngIf="!isLoadingPacientes && misPacientes.length > 0" class="list-container">
+                <div *ngFor="let paciente of misPacientes" class="list-item paciente-item">
+                    <div class="item-info">
+                        <strong>{{ paciente.Nombre }}</strong>
+                    </div>
+                    <button class="btn btn-primary" (click)="verDetallePaciente(paciente.ID_Paciente)">
+                        <span class="icon fa-solid fa-eye"></span> Ver Paciente
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div *ngIf="vistaActual === 'paciente-detalle'">
+        <header class="dashboard-header">
+            <h1>Detalle del Paciente</h1>
+            <button class="btn-back" (click)="navegarA('pacientes')">
+                ← Volver a la Lista
+            </button>
+        </header>
+
+        <div *ngIf="isLoadingDetalle" class="loading-state">
+            <p>Cargando información del paciente...</p>
+        </div>
+
+        <section *ngIf="!isLoadingDetalle && pacienteSeleccionado" class="card paciente-detalle-card">
+          <h2 class="card-title">{{ pacienteSeleccionado.Nombre }}</h2>
+          
+          <div class="detalle-grid">
+              <div>
+                  <strong>Contacto</strong>
+                  <p>Correo<span class="detalle-valor">{{ pacienteSeleccionado.Correo }}</span></p>
+                  <p>Teléfono<span class="detalle-valor">{{ pacienteSeleccionado.Telefono }}</span></p>
+              </div>
+              <div>
+                  <strong>Datos Personales</strong>
+                  <p>Nacimiento<span class="detalle-valor">{{ formatearFecha(pacienteSeleccionado.FechaNacimiento) }}</span></p>
+                  <p>Sexo<span class="detalle-valor">{{ pacienteSeleccionado.Sexo === 'M' ? 'Masculino' : 'Femenino' }}</span></p>
+                  <p>Ocupación<span class="detalle-valor">{{ pacienteSeleccionado.Ocupacion }}</span></p>
+              </div>
+              <div>
+                  <strong>Ubicación</strong>
+                  <p>Dirección<span class="detalle-valor">{{ pacienteSeleccionado.Direccion }}</span></p>
+                  <p>Ciudad<span class="detalle-valor">{{ pacienteSeleccionado.Ciudad }}</span></p>
+                  <p>C.P.<span class="detalle-valor">{{ pacienteSeleccionado.Codigo_Postal }}</span></p>
+              </div>
+          </div>
+          
+          <div class="paciente-acciones">
+              <button class="btn btn-secondary">Ver Historial Clínico</button>
+          </div>
+      </section>
+
+        <div *ngIf="!isLoadingDetalle && !pacienteSeleccionado" class="error-state">
+            <p>No se pudo cargar la información del paciente. Intente de nuevo.</p>
+        </div>
     </div>
   </main>
 </div>

@@ -48,6 +48,21 @@ export interface CitaMedico {
   Paciente_Correo: string;
 }
 
+export interface PacienteBasico {
+  ID_Paciente: number;
+  Nombre: string;
+}
+
+export interface PacienteDetalle extends PacienteBasico {
+  Sexo: string;
+  FechaNacimiento: string;
+  Direccion: string;
+  Codigo_Postal: string;
+  Ciudad: string;
+  Ocupacion: string;
+  Telefono: string;
+  Correo: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -116,6 +131,36 @@ export class Api {
       catchError(error => {
         console.error('Error al obtener citas del médico:', error);
         return of([]);
+      })
+    );
+  }
+
+
+  // 6. Obtiene la lista de pacientes únicos del médico
+  getMisPacientes(): Observable<PacienteBasico[]> {
+    return this.auth.getAccessTokenSilently().pipe(
+      switchMap(token => {
+        const headers = { Authorization: `Bearer ${token}` };
+        return this.http.get<PacienteBasico[]>(`${this.API_URL}/medico/mis-pacientes`, { headers });
+      }),
+      catchError(error => {
+        console.error('Error al obtener lista de pacientes del médico:', error);
+        return of([]);
+      })
+    );
+  }
+
+  // 7. Obtiene la información detallada de un paciente
+  getPacienteDetalle(idPaciente: number): Observable<PacienteDetalle | null> {
+    return this.auth.getAccessTokenSilently().pipe(
+      switchMap(token => {
+        const headers = { Authorization: `Bearer ${token}` };
+        // Usar <PacienteDetalle | null> en el get para manejar la posibilidad de un error 404/500
+        return this.http.get<PacienteDetalle>(`${this.API_URL}/paciente/${idPaciente}`, { headers });
+      }),
+      catchError(error => {
+        console.error('Error al obtener detalle del paciente:', error);
+        return of(null); // Devolver null si hay un error
       })
     );
   }
