@@ -304,7 +304,37 @@ export class Calendario implements OnInit {
   }
 
   isHoraDisponible(hora: string): boolean {
-    return !this.horasOcupadas.includes(hora);
+    // Verificar si la hora ya está ocupada
+    if (this.horasOcupadas.includes(hora)) {
+      return false;
+    }
+
+    // Si la fecha seleccionada es hoy, verificar que la hora sea futura
+    if (this.selectedDate) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const selectedDateOnly = new Date(this.selectedDate);
+      selectedDateOnly.setHours(0, 0, 0, 0);
+
+      // Si es hoy, validar que la hora sea al menos 1 hora en el futuro
+      if (selectedDateOnly.getTime() === today.getTime()) {
+        const now = new Date();
+        const [horaStr, minutoStr] = hora.split(':');
+        const horaSeleccionada = new Date();
+        horaSeleccionada.setHours(parseInt(horaStr), parseInt(minutoStr), 0, 0);
+
+        // Agregar 1 hora al tiempo actual como margen mínimo
+        const tiempoMinimoRequerido = new Date(now.getTime() + 60 * 60 * 1000);
+
+        // La hora debe ser al menos 1 hora después de ahora
+        if (horaSeleccionada <= tiempoMinimoRequerido) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   confirmarCita(): void {
