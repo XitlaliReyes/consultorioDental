@@ -11,14 +11,7 @@
            class="nav-item">
             <span class="icon fa-solid fa-gauge"></span> Dashboard 
         </a>
-        <a (click)="navegarA('citas')" 
-           [class.active]="vistaActual === 'citas'" 
-           class="nav-item">
-            <span class="icon fa-regular fa-calendar-alt"></span> Citas
-            <span *ngIf="totalCitasPendientes > 0" class="notification-badge">
-                {{ totalCitasPendientes }}
-            </span>
-        </a>
+        
         <a (click)="navegarA('pacientes')" 
            [class.active]="vistaActual === 'pacientes' || vistaActual === 'paciente-detalle'" 
            class="nav-item">
@@ -114,18 +107,15 @@
                   </div>
           
                   <div class="cita-acciones">
-                    <button
-                        *ngIf="cita.Estado === 'Agendada'"
-                        
-                        class="btn-aceptar-cita-dashboard" 
-                
-                        (click)="aceptarCita(cita.ID_Cita)"
-                        [disabled]="procesandoCita === cita.ID_Cita"
-                    >
-                        {{ procesandoCita === cita.ID_Cita ? 'Confirmando...' : 'Aceptar Cita' }}
-                    </button>
-                    
-                    </div>
+                      <button
+                          *ngIf="cita.Estado === 'Agendada' || cita.Estado === 'Confirmada'"
+                          class="btn-accion btn-cancelar" 
+                          (click)="cancelarCita(cita.ID_Cita)"
+                          [disabled]="procesandoCita === cita.ID_Cita"
+                      >
+                          {{ procesandoCita === cita.ID_Cita ? 'Cancelando...' : 'Cancelar Cita' }}
+                      </button>
+                  </div>
                   </div>
           </div>
         </section>

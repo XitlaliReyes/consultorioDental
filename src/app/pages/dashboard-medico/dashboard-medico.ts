@@ -196,22 +196,23 @@ export class DashboardMedicoComponent implements OnInit {
     return hora.substring(0, 5);
   }
   
-  aceptarCita(idCita: number) {
-    if (confirm('¿Estás seguro de que deseas confirmar esta cita?')) {
-        this.procesandoCita = idCita; // Activa el "Procesando..." en el botón
+  cancelarCita(idCita: number) { 
+    if (confirm('¿Estás seguro de que deseas CANCELAR esta cita? Esta acción notificará al paciente.')) {
+        this.procesandoCita = idCita; // Activa el "Cancelando..." en el botón
         
-        // ** CAMBIO AQUÍ **: Usar el nuevo método del servicio
-        this.api.confirmarCita(idCita).subscribe({
+        // ** CAMBIO AQUÍ **: Llamada al nuevo método del servicio API
+        // Debes asegurarte de agregar el método 'cancelarCita(idCita: number): Observable<any>' a tu servicio 'Api'.
+        this.api.cancelarCita(idCita).subscribe({ 
             next: () => {
-                alert('¡Cita confirmada exitosamente! Se ha enviado el correo al paciente.');
+                alert('¡Cita cancelada exitosamente! Se ha notificado al paciente por correo.');
                 this.procesandoCita = null;
-                // Recarga la lista para que el estado se actualice y el botón desaparezca
+                // Recarga la lista para que el estado se actualice
                 this.cargarMisCitas(); 
             },
-            error: (error) => {
-                console.error('Error al confirmar la cita:', error);
-                // Aquí podrías mostrar el mensaje de error que viene del backend
-                alert(`Error al confirmar la cita: ${error.error?.error || 'Error de conexión'}`);
+            error: (error: { error: { error: any; }; }) => {
+                console.error('Error al cancelar la cita:', error);
+                // Muestra el mensaje de error del servidor si existe
+                alert(`Error al cancelar la cita: ${error.error?.error || 'Error de conexión'}`);
                 this.procesandoCita = null;
             }
         });

@@ -714,59 +714,43 @@
   color: #2d91f5; /* Un tono oscuro y serio */
   border-bottom: 2px solid #bee1f8; /* Línea separadora simple */
 }
-/*
- * --------------------------------
- * ESTILOS ESPECÍFICOS PARA BOTÓN DE CONFIRMACIÓN DE CITA
- * --------------------------------
- */
-
-/* Contenedor de acciones (para alinear el botón) */
+/* Estilo base para el contenedor de acciones */
 .cita-acciones {
-  /* Asegura que el botón se alinee a la derecha */
+  /* Esto asegura que el botón se alinee a la derecha si no hay otros elementos */
   display: flex;
   justify-content: flex-end; 
-  padding-top: 15px; 
-  margin-top: 15px;
-  border-top: 1px solid #eee;
 }
 
-.cita-acciones .btn-aceptar-cita-dashboard {
-  background-color: #007bff;
-  color: white;
+/* Estilo del botón de acción (inspirado en la imagen) */
+.btn-accion {
+  padding: 8px 15px; /* Relleno */
   border: none;
-  border-radius: 6px; 
-  
-  /* Reducción para hacerlo más compacto */
-  padding: 23px 14px; 
-  font-size: 14px;   
-  
-  font-weight: bold;
+  border-radius: 5px; /* Bordes redondeados sutiles */
   cursor: pointer;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-  line-height: 1;
-  
-  
+  font-weight: 600; /* Semi-negrita */
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera para pop-out */
 }
 
-/* Efecto hover */
-.cita-acciones .btn-aceptar-cita-dashboard:hover:not(:disabled) {
-  background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
+/* Estilo específico para el botón de Cancelación (ROJO) */
+.btn-cancelar {
+  background-color: #dc3545; /* Rojo fuerte para indicar peligro */
+  color: white; /* Letras blancas */
 }
 
-/* Estilo cuando está deshabilitado (Procesando...) */
-.cita-acciones .btn-aceptar-cita-dashboard:disabled {
-  background-color: #cccccc; /* Gris para deshabilitado */
-  color: #666666;
+.btn-cancelar:hover {
+  background-color: #c82333; /* Rojo más oscuro al pasar el ratón */
+  transform: translateY(-1px); /* Efecto sutil de levantamiento */
+}
+
+/* Estilo para cuando el botón está deshabilitado */
+.btn-cancelar:disabled {
+  background-color: #f1aeb5; /* Rojo claro para el estado de "Cancelando..." */
+  color: #6c757d; /* Texto gris */
   cursor: not-allowed;
   box-shadow: none;
-  transform: none;
-}
-.estado{
-  color: white;
+  transform: none; 
 }
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1024px) {

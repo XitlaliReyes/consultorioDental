@@ -67,6 +67,7 @@ export interface PacienteDetalle extends PacienteBasico {
   providedIn: 'root'
 })
 export class Api {
+  
   private http = inject(HttpClient);
   private auth = inject(AuthService);
 
@@ -165,16 +166,18 @@ export class Api {
     );
   }
   
-  //8. el medico confirma la cita asignada 
-  confirmarCita(idCita: number): Observable<any> {
+  // 8. Permite al médico cancelar una cita (INCLUYE TOKEN DE AUTH0)
+  cancelarCita(idCita: number): Observable<any> {
+    // 🔥 CAMBIO DE URL: Ahora apunta a la ruta específica del médico
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        // Llama a la nueva ruta
-        return this.http.post(`${this.API_URL}/citas/confirmar/${idCita}`, {}, { headers });
+        
+        // La nueva ruta que creaste en el backend
+        return this.http.post(`${this.API_URL}/citas/cancelar-medico/${idCita}`, {}, { headers });
       })
     );
-  }
+}
   // Rutas de prueba
   getServidorStatus(): Observable<any> {
     return this.http.get(`http://localhost:3000/`);

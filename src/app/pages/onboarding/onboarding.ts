@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Api } from '../../services/api';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'app-onboarding',
@@ -11,9 +12,10 @@ import { Api } from '../../services/api';
   templateUrl: './onboarding.html',
   styleUrl: './onboarding.css'
 })
-export class Onboarding {
+export class Onboarding implements OnInit {
   private api = inject(Api);
   private router = inject(Router);
+  private auth = inject(AuthService);
 
   selectedRole: 'Medico' | 'Paciente' | null = null;
   isSubmitting = false;
@@ -41,8 +43,188 @@ export class Onboarding {
     correo: ''
   };
 
+  // Errores de validación
+  errors: any = {};
+
+  ngOnInit() {
+    // Obtener el correo del usuario autenticado de Auth0
+    this.auth.user$.subscribe(user => {
+      if (user?.email) {
+        this.medicoData.correo = user.email;
+        this.pacienteData.correo = user.email;
+      }
+    });
+  }
+
   selectRole(role: 'Medico' | 'Paciente') {
     this.selectedRole = role;
+    this.errors = {}; // Limpiar errores al cambiar de rol
+  }
+
+  // Validaciones
+  validateNombre(value: string, fieldName: string): boolean {
+    const pattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+    if (!value || value.trim().length === 0) {
+      this.errors[fieldName] = 'Este campo es obligatorio';
+      return false;
+    }
+    if (value.length < 2 || value.length > 50) {
+      this.errors[fieldName] = 'Debe tener entre 2 y 50 caracteres';
+      return false;
+    }
+    if (!pattern.test(value)) {
+      this.errors[fieldName] = 'Solo se permiten letras, espacios y acentos';
+      return false;
+    }
+    delete this.errors[fieldName];
+    return true;
+  }
+
+  validateTelefono(value: string): boolean {
+    const pattern = /^\d{10}$/;
+    if (!value) {
+      this.errors.telefono = 'El teléfono es obligatorio';
+      return false;
+    }
+    if (!pattern.test(value)) {
+      this.errors.telefono = 'Debe contener exactamente 10 dígitos';
+      return false;
+    }
+    delete this.errors.telefono;
+    return true;
+  }
+
+  validateCorreo(value: string): boolean {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value) {
+      this.errors.correo = 'El correo es obligatorio';
+      return false;
+    }
+    if (value.length > 100) {
+      this.errors.correo = 'El correo no puede exceder 100 caracteres';
+      return false;
+    }
+    if (!pattern.test(value)) {
+      this.errors.correo = 'Formato de correo inválido';
+      return false;
+    }
+    delete this.errors.correo;
+    return true;
+  }
+
+  validateCedula(value: string): boolean {
+    const pattern = /^[a-zA-Z0-9]+$/;
+    if (!value) {
+      this.errors.cedula = 'La cédula profesional es obligatoria';
+      return false;
+    }
+    if (value.length < 5 || value.length > 10) {
+      this.errors.cedula = 'Debe tener entre 5 y 10 caracteres';
+      return false;
+    }
+    if (!pattern.test(value)) {
+      this.errors.cedula = 'Solo se permiten letras y números';
+      return false;
+    }
+    delete this.errors.cedula;
+    return true;
+  }
+
+  validateExperiencia(value: number): boolean {
+    if (value === null || value === undefined) {
+      this.errors.experiencia = 'Los años de experiencia son obligatorios';
+      return false;
+    }
+    if (value < 0 || value > 60) {
+      this.errors.experiencia = 'Debe estar entre 0 y 60 años';
+      return false;
+    }
+    delete this.errors.experiencia;
+    return true;
+  }
+
+  validateCodigoPostal(value: string): boolean {
+    const pattern = /^\d{5}$/;
+    if (!value) {
+      this.errors.codigoPostal = 'El código postal es obligatorio';
+      return false;
+    }
+    if (!pattern.test(value)) {
+      this.errors.codigoPostal = 'Debe contener exactamente 5 dígitos';
+      return false;
+    }
+    delete this.errors.codigoPostal;
+    return true;
+  }
+
+  validateFechaNacimiento(value: string): boolean {
+    if (!value) {
+      this.errors.fechaNacimiento = 'La fecha de nacimiento es obligatoria';
+      return false;
+    }
+    const fecha = new Date(value);
+    const hoy = new Date();
+    if (fecha > hoy) {
+      this.errors.fechaNacimiento = 'La fecha no puede ser futura';
+      return false;
+    }
+    delete this.errors.fechaNacimiento;
+    return true;
+  }
+
+  validateDireccion(value: string): boolean {
+    if (!value || value.trim().length === 0) {
+      this.errors.direccion = 'La dirección es obligatoria';
+      return false;
+    }
+    if (value.length < 5 || value.length > 100) {
+      this.errors.direccion = 'Debe tener entre 5 y 100 caracteres';
+      return false;
+    }
+    delete this.errors.direccion;
+    return true;
+  }
+
+  validateSexo(value: string): boolean {
+    if (!value) {
+      this.errors.sexo = 'El sexo es obligatorio';
+      return false;
+    }
+    delete this.errors.sexo;
+    return true;
+  }
+
+  validateMedicoForm(): boolean {
+    let isValid = true;
+    
+    isValid = this.validateNombre(this.medicoData.nombre, 'nombre') && isValid;
+    isValid = this.validateNombre(this.medicoData.apellidos, 'apellidos') && isValid;
+    isValid = this.validateTelefono(this.medicoData.telefono) && isValid;
+    isValid = this.validateCorreo(this.medicoData.correo) && isValid;
+    isValid = this.validateCedula(this.medicoData.cedula) && isValid;
+    isValid = this.validateExperiencia(this.medicoData.experiencia) && isValid;
+
+    return isValid;
+  }
+
+  validatePacienteForm(): boolean {
+    let isValid = true;
+    
+    isValid = this.validateNombre(this.pacienteData.nombre, 'nombre') && isValid;
+    isValid = this.validateSexo(this.pacienteData.sexo) && isValid;
+    isValid = this.validateFechaNacimiento(this.pacienteData.fechaNacimiento) && isValid;
+    isValid = this.validateDireccion(this.pacienteData.direccion) && isValid;
+    isValid = this.validateCodigoPostal(this.pacienteData.codigoPostal) && isValid;
+    isValid = this.validateNombre(this.pacienteData.ciudad, 'ciudad') && isValid;
+    isValid = this.validateTelefono(this.pacienteData.telefono) && isValid;
+    isValid = this.validateCorreo(this.pacienteData.correo) && isValid;
+    
+    // Ocupación es opcional, pero si tiene valor, debe ser válida
+    if (this.pacienteData.ocupacion) {
+      isValid = this.validateNombre(this.pacienteData.ocupacion, 'ocupacion') && isValid;
+    }
+
+    return isValid;
   }
 
   onSubmit() {
@@ -53,22 +235,17 @@ export class Onboarding {
 
     if (this.isSubmitting) return;
 
-    const data = this.selectedRole === 'Medico' ? this.medicoData : this.pacienteData;
+    // Validar según el rol
+    const isValid = this.selectedRole === 'Medico' 
+      ? this.validateMedicoForm() 
+      : this.validatePacienteForm();
 
-    // Validación básica
-    if (this.selectedRole === 'Medico') {
-      // Usa this.medicoData directamente
-      if (!this.medicoData.nombre || !this.medicoData.apellidos || !this.medicoData.cedula) { 
-        alert('Por favor completa todos los campos obligatorios');
-        return;
-      }
-    } else {
-      // El bloque 'else' es para el Paciente, que ya usa this.pacienteData
-      if (!this.pacienteData.nombre || !this.pacienteData.sexo || !this.pacienteData.fechaNacimiento) {
-        alert('Por favor completa todos los campos obligatorios');
-        return;
-      }
+    if (!isValid) {
+      alert('Por favor corrige los errores en el formulario');
+      return;
     }
+
+    const data = this.selectedRole === 'Medico' ? this.medicoData : this.pacienteData;
 
     this.isSubmitting = true;
 
