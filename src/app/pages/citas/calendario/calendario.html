@@ -25,41 +25,16 @@
   <div *ngIf="currentView === 'agendar'">
     <button type="button" class="btn-back" (click)="volverASeleccion()">← Volver a Selección</button>
     
-    <!-- BARRA DE PROGRESO ACTUALIZADA -->
+    <!-- BARRA DE PROGRESO ACTUALIZADA (3 PASOS) -->
     <div class="progress-bar">
-      <span [class.active]="pasoActual >= 1">1. Médico</span>
-      <span [class.active]="pasoActual >= 2">2. Servicio</span>
-      <span [class.active]="pasoActual >= 3">3. Fecha y Hora</span>
-      <span [class.active]="pasoActual >= 4">4. Confirmación</span>
+      <span [class.active]="pasoActual >= 1">1. Servicio</span>
+      <span [class.active]="pasoActual >= 2">2. Médico, Fecha y Hora</span>
+      <span [class.active]="pasoActual >= 3">3. Confirmación</span>
     </div>
 
-    <!-- PASO 1: SELECCIÓN DE MÉDICO -->
+    <!-- PASO 1: SELECCIÓN DE SERVICIO -->
     <div class="paso-card" *ngIf="pasoActual === 1">
-      <h3>Selecciona el Médico con quien deseas agendar</h3>
-      
-      <div *ngIf="medicos.length === 0" class="loading-message">
-        Cargando médicos o no hay médicos disponibles.
-      </div>
-
-      <div class="medicos-grid">
-        <div 
-          *ngFor="let medico of medicos" 
-          class="tarjeta-medico"
-          (click)="seleccionarMedico(medico)"
-        >
-          <div class="medico-icon">👨‍⚕️</div>
-          <h4>{{ getNombreCompletoMedico(medico) }}</h4>
-        </div>
-      </div>
-    </div>
-
-    <!-- PASO 2: SELECCIÓN DE SERVICIO -->
-    <div class="paso-card" *ngIf="pasoActual === 2">
-      <div class="header-paso">
-        <button class="btn-back" (click)="pasoActual = 1">← Volver</button>
-        <h3>Médico Seleccionado: <strong>{{ nombreMedicoSeleccionado }}</strong></h3>
-      </div>
-      <h3 style="margin-top: 1rem;">Selecciona el Servicio que deseas agendar</h3>
+      <h3>Selecciona el Servicio que deseas agendar</h3>
       
       <div *ngIf="servicios.length === 0" class="loading-message">
         Cargando servicios o no hay servicios disponibles.
@@ -81,17 +56,38 @@
       </div>
     </div>
 
-    <!-- PASO 3: SELECCIÓN DE FECHA Y HORA -->
-    <div class="paso-card" *ngIf="pasoActual === 3">
+    <!-- PASO 2: SELECCIÓN DE MÉDICO, FECHA Y HORA -->
+    <div class="paso-card" *ngIf="pasoActual === 2">
       <div class="header-paso">
-        <button class="btn-back" (click)="pasoActual = 2">← Volver</button>
-        <div>
-          <h3>Médico: <strong>{{ nombreMedicoSeleccionado }}</strong></h3>
-          <h3>Servicio: <strong>{{ nombreServicioSeleccionado }}</strong></h3>
-        </div>
+        <button class="btn-back" (click)="pasoActual = 1">← Volver</button>
+        <h3>Servicio Seleccionado: <strong>{{ nombreServicioSeleccionado }}</strong></h3>
       </div>
-      
-      <div class="seleccion-fecha-hora">
+
+      <!-- DROPDOWN DE SELECCIÓN DE MÉDICO -->
+      <div class="medico-selector">
+        <label for="selectMedico">
+          <span class="icon">👨‍⚕️</span> Selecciona el Médico:
+        </label>
+        <select 
+          id="selectMedico" 
+          [(ngModel)]="idMedicoSeleccionado" 
+          (change)="onMedicoDropdownChange()"
+          class="medico-dropdown"
+        >
+          <option [value]="null" disabled selected>-- Elige un médico --</option>
+          <option *ngFor="let medico of medicos" [value]="medico.ID_Medico">
+            {{ getNombreCompletoMedico(medico) }}
+          </option>
+        </select>
+      </div>
+
+      <!-- MENSAJE SI NO SE HA SELECCIONADO MÉDICO -->
+      <div *ngIf="!idMedicoSeleccionado" class="info-message">
+        <p>👆 Por favor, selecciona un médico para ver la disponibilidad de fechas y horarios.</p>
+      </div>
+
+      <!-- CALENDARIO Y HORARIOS (Solo visible si hay médico seleccionado) -->
+      <div *ngIf="idMedicoSeleccionado" class="seleccion-fecha-hora">
         
         <!-- CALENDARIO -->
         <div class="calendario-columna">
@@ -124,7 +120,7 @@
         <!-- HORAS -->
         <div class="horas-columna">
           <h4 *ngIf="!selectedDate">Selecciona un día en el calendario.</h4>
-          <h4 *ngIf="selectedDate">Horas para el {{ getFormattedSelectedDate() }}</h4>
+          <h4 *ngIf="selectedDate">Horas disponibles para {{ getFormattedSelectedDate() }}</h4>
           
           <div class="horas-grid">
             <button 
@@ -141,7 +137,7 @@
           
           <button 
             *ngIf="selectedDate && selectedHour"
-            (click)="pasoActual = 4" 
+            (click)="pasoActual = 3" 
             class="btn-continuar"
             type="button"
           >
@@ -151,16 +147,16 @@
       </div>
     </div>
 
-    <!-- PASO 4: CONFIRMACIÓN -->
-    <div class="paso-card" *ngIf="pasoActual === 4">
+    <!-- PASO 3: CONFIRMACIÓN -->
+    <div class="paso-card" *ngIf="pasoActual === 3">
       <div class="header-paso">
-        <button class="btn-back" (click)="pasoActual = 3">← Modificar</button>
+        <button class="btn-back" (click)="pasoActual = 2">← Modificar</button>
         <h3>Confirma tu Cita</h3>
       </div>
 
       <div class="cita-resumen-final">
-        <p class="resumen-item"><strong>Médico:</strong> <span>{{ nombreMedicoSeleccionado }}</span></p>
         <p class="resumen-item"><strong>Servicio:</strong> <span>{{ nombreServicioSeleccionado }}</span></p>
+        <p class="resumen-item"><strong>Médico:</strong> <span>{{ nombreMedicoSeleccionado }}</span></p>
         <p class="resumen-item"><strong>Fecha:</strong> <span>{{ getFormattedSelectedDate() }}</span></p>
         <p class="resumen-item"><strong>Hora:</strong> <span>{{ selectedHour }}</span></p>
       </div>

@@ -324,6 +324,69 @@ h3 {
 /* -----------------------------------
  PASO 3: CONFIRMACIÓN
  ----------------------------------- */
+
+ /* Selector de Médico */
+
+
+.medico-selector label {
+  display: block;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+}
+
+.medico-selector label .icon {
+  font-size: 1.3rem;
+  margin-right: 0.5rem;
+}
+
+.medico-dropdown {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.medico-dropdown:hover {
+  border-color: #0f217a;
+}
+
+.medico-dropdown:focus {
+  outline: none;
+  border-color: #164d80;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.medico-dropdown option {
+  padding: 0.5rem;
+}
+
+/* Mensaje informativo */
+.info-message {
+  background: #e3f2fd;
+  border-left: 4px solid #2196F3;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+}
+
+.info-message p {
+  margin: 0;
+  color: #1976D2;
+  font-size: 1rem;
+}
+
+/* Ajustes para la sección de fecha y hora */
+.seleccion-fecha-hora {
+  margin-top: 2rem;
+}
+
+
 .cita-resumen-final p {
   background-color: white;
   padding: 15px;

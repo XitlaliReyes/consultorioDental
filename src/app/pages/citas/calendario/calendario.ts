@@ -19,8 +19,6 @@ interface Medico {
   ID_Medico: number;
   Nombre: string;
   Apellidos: string;
-  // Especialidad: string;
-  // Telefono: string;
 }
 
 interface DiaCalendario {
@@ -51,10 +49,10 @@ export class Calendario implements OnInit {
   // Control de vista principal
   currentView: 'selection' | 'agendar' | 'mis-citas' = 'selection';
 
-  // Propiedades de Agendamiento (ahora con médico)
+  // Propiedades de Agendamiento
   selectedDate: Date | null = null;
   selectedHour: string | null = null;
-  pasoActual: number = 1; // Ahora: 1=Médico, 2=Servicio, 3=Fecha/Hora, 4=Confirmación
+  pasoActual: number = 1; // 1=Servicio, 2=Médico+Fecha+Hora, 3=Confirmación
   
   medicos: Medico[] = [];
   idMedicoSeleccionado: number | null = null;
@@ -84,9 +82,8 @@ export class Calendario implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (this.currentView === 'agendar' || this.pasoActual === 1) { 
-      this.cargarMedicos(); 
-    }
+    this.cargarServicios();
+    this.cargarMedicos();
     this.generarCalendario();
   }
   
@@ -97,6 +94,7 @@ export class Calendario implements OnInit {
   selectView(view: 'agendar' | 'mis-citas'): void {
     this.currentView = view;
     if (view === 'agendar') {
+      this.cargarServicios();
       this.cargarMedicos();
       this.resetearFlujo();
     }
@@ -108,7 +106,7 @@ export class Calendario implements OnInit {
   }
 
   // ===================================
-  // LÓGICA DE SELECCIÓN: MÉDICO Y SERVICIO
+  // LÓGICA DE SELECCIÓN: SERVICIO Y MÉDICO
   // ===================================
 
   cargarMedicos(): void {
@@ -120,13 +118,6 @@ export class Calendario implements OnInit {
         console.error('Error al cargar médicos:', err);
       }
     });
-  }
-
-  seleccionarMedico(medico: Medico): void {
-    this.idMedicoSeleccionado = medico.ID_Medico;
-    this.nombreMedicoSeleccionado = `${medico.Nombre} ${medico.Apellidos}`;
-    this.pasoActual = 2;
-    this.cargarServicios(); // Cargar servicios al seleccionar médico
   }
 
   cargarServicios(): void {
@@ -143,7 +134,24 @@ export class Calendario implements OnInit {
   seleccionarServicio(servicio: Servicio): void {
     this.idServicioSeleccionado = servicio.ID_Servicio;
     this.nombreServicioSeleccionado = servicio.Nombre;
-    this.pasoActual = 3;
+    this.pasoActual = 2;
+  }
+
+  // Método que se ejecuta cuando cambia el dropdown de médico
+  onMedicoDropdownChange(): void {
+    const medico = this.medicos.find(m => m.ID_Medico === Number(this.idMedicoSeleccionado));
+
+    if (medico) {
+      this.nombreMedicoSeleccionado = `Dr(a). ${medico.Nombre} ${medico.Apellidos}`;
+      
+      // Si ya había una fecha seleccionada, recargar disponibilidad
+      if (this.selectedDate) {
+        this.getHorasOcupadas(Number(this.idMedicoSeleccionado), this.selectedDate);
+      }
+      
+      // Limpiar la hora seleccionada al cambiar de médico
+      this.selectedHour = null;
+    }
   }
 
   getNombreCompletoMedico(medico: Medico): string {
@@ -190,17 +198,6 @@ export class Calendario implements OnInit {
     ];
     return `${meses[this.currentMonth.getMonth()]} ${this.currentMonth.getFullYear()}`;
   }
-
-  onMedicoDropdownChange(): void {
-  const medico = this.medicos.find(m => m.ID_Medico === Number(this.idMedicoSeleccionado));
-
-  if (medico) {
-    this.nombreMedicoSeleccionado = medico.Nombre + ' ' + medico.Apellidos;
-    this.pasoActual = 2;
-    this.cargarServicios(); // Ya lo tienes implementado
-  }
-}
-
 
   getFormattedSelectedDate(): string {
     if (!this.selectedDate) return '';
@@ -253,10 +250,7 @@ export class Calendario implements OnInit {
       });
     }
 
-    const totalDays = this.diasCalendario.length;
-    const requiredTotal = 42;
-
-    for (let i = 1; this.diasCalendario.length < requiredTotal; i++) {
+    for (let i = 1; this.diasCalendario.length < 42; i++) {
       const nextDate = new Date(lastDayOfMonth);
       nextDate.setDate(lastDayOfMonth.getDate() + i);
       this.diasCalendario.push({
@@ -291,7 +285,7 @@ export class Calendario implements OnInit {
   }
 
   seleccionarDia(dia: DiaCalendario): void {
-    if (this.pasoActual !== 3) return;
+    if (this.pasoActual !== 2) return;
     if (!dia.esDelMesActual || !dia.estaDisponible) return;
 
     this.diasCalendario.forEach((d: DiaCalendario) => d.estaSeleccionado = false);
@@ -299,8 +293,9 @@ export class Calendario implements OnInit {
     this.selectedDate = dia.fecha;
     this.selectedHour = null;
 
+    // Solo cargar disponibilidad si ya hay un médico seleccionado
     if (this.selectedDate && this.idMedicoSeleccionado) {
-      this.getHorasOcupadas(this.idMedicoSeleccionado, this.selectedDate);
+      this.getHorasOcupadas(Number(this.idMedicoSeleccionado), this.selectedDate);
     }
   }
 
