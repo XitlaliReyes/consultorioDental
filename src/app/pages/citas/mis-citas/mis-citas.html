@@ -1,6 +1,5 @@
 <div class="citas-listado">
-    <h3>Citas Pendientes e Historial</h3>
-
+    <p>Las cancelaciones deberán registrarse en el sistema con un mínimo de 7 días de anticipación a la cita.</p>
     <div *ngIf="loading" class="mensaje-info">
         Cargando tus citas...
     </div>
@@ -46,7 +45,7 @@
                     disabled
                     type="button"
                 >
-                    Plazo Vencido
+                    Cancelar Cita
                 </button>
                 <span *ngIf="cita.Estado === 'Cancelada'" class="cancelada-msg">Cita cancelada</span>
             </div>

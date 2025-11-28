@@ -73,12 +73,13 @@
 
 .btn-cancelar {
     background-color: var(--color-cancelada);
-    color: white;
+    color: #9a1414;
     border: 1px solid var(--color-cancelada);
 }
 
 .btn-cancelar:hover {
     background-color: #c82333;
+    color: white;
 }
 
 .btn-no-cancelar {
