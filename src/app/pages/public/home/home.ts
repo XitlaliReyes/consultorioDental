@@ -1,69 +1,53 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
-import { Api } from '../../../services/api';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '@auth0/auth0-angular';
+import { take } from 'rxjs/operators';
+
+interface Service {
+  title: string;
+  description: string;
+  image: string;
+  icon: string;
+}
+
+interface CarouselImage {
+  src: string;
+  alt: string;
+}
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './home.html',
-  styleUrl: './home.css'
+  styleUrls: ['./home.css']
 })
-export class Home implements OnInit {
-  private auth = inject(AuthService);
-  private api = inject(Api);
-  private router = inject(Router);
-  
-  userName: string = '';
-  userEmail: string = '';
 
-  images = [
-    { src: 'https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8', alt: 'Consultorio dental moderno' },
-    { src: 'https://images.unsplash.com/photo-1683520701490-7172fa20c8f1', alt: 'Familia feliz en el dentista' },
-    { src: 'https://images.unsplash.com/photo-1565090567208-c8038cfcf6cd', alt: 'Dentista profesional' }
-  ];
+export class Home implements OnInit {
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  
+  showAlert = false;
   current = 0;
 
-  ngOnInit() {
-    // Obtener información del usuario
-    this.api.getRole().subscribe({
-        next: (response) => {   // response tiene tipo ProfileRoleResponse | null
-          if (response) {       // filtramos null
-            this.userName = response.nombre;
-            this.userEmail = response.correo || '';
-          } else {
-            console.warn('No hay datos de usuario');
-          }
-        },
-        error: (error: any) => {
-          console.error('Error al obtener datos del usuario:', error);
-        }
-    });
+  // TUS IMÁGENES ORIGINALES DEL CARRUSEL
+  images: CarouselImage[] = [
+    { 
+      src: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=1974&auto=format&fit=crop', 
+      alt: 'Clínica dental moderna' 
+    },
+    { 
+      src: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=2070&auto=format&fit=crop', 
+      alt: 'Equipo profesional' 
+    },
+    { 
+      src: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=2068&auto=format&fit=crop', 
+      alt: 'Tecnología avanzada' 
+    }
+  ];
 
-  }
-
-  next() { 
-    this.current = (this.current + 1) % this.images.length; 
-  }
-  
-  prev() { 
-    this.current = (this.current - 1 + this.images.length) % this.images.length; 
-  }
-  
-  trackByTitle(index: number, service: any): string {
-    return service.title;
-  }
-
-  irACitas() {
-    this.router.navigate(['/citas']);
-  }
-
-  irNosotros() {
-    this.router.navigate(['/nosotros']);
-  }
-
+  // TUS SERVICIOS ORIGINALES
   services = [
     {
       title: "Limpieza Dental",
@@ -103,6 +87,52 @@ export class Home implements OnInit {
     }
   ];
 
-  
-  
+  ngOnInit(): void {
+    this.startCarousel();
+  }
+
+  startCarousel(): void {
+    setInterval(() => {
+      this.next();
+    }, 5000);
+  }
+
+  next(): void {
+    this.current = (this.current + 1) % this.images.length;
+  }
+
+  prev(): void {
+    this.current = this.current === 0 
+      ? this.images.length - 1 
+      : this.current - 1;
+  }
+
+  irACitas(): void {
+    this.auth.isAuthenticated$.pipe(take(1)).subscribe(isAuth => {
+      if (isAuth) {
+        this.router.navigate(['/citas']);
+      } else {
+        this.mostrarAlerta();
+      }
+    });
+  }
+
+  irNosotros(): void {
+    this.router.navigate(['/nosotros']);
+  }
+  mostrarAlerta(): void {
+    this.showAlert = true;
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 4000);
+  }
+
+  cerrarAlerta(): void {
+    this.showAlert = false;
+  }
+
+  irALogin(): void {
+    this.showAlert = false;
+    this.auth.loginWithRedirect();
+  }
 }

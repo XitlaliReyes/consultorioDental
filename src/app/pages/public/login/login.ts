@@ -22,9 +22,12 @@ export class Login {
    * Inicia el flujo de autenticación, redirigiendo al Login Universal de Auth0.
    */
   onLogin() {
-    this.auth.loginWithRedirect();
+    this.auth.loginWithRedirect({
+      authorizationParams: {
+        prompt: 'login'   // 👈 fuerza a Auth0 a pedir correo siempre
+      }
+    });
   }
-
   /**
    * Inicia el flujo de registro, redirigiendo al Login Universal y pidiéndole 
    * a Auth0 que muestre la pestaña de 'Sign Up' por defecto.

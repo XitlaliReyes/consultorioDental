@@ -1,23 +1,48 @@
 <header class="navbar">
   <div class="navbar-container">
     <a href="home" class="nav-link">
-    <div class="navbar-brand">
-      <div class="navbar-logo">
-        <span>🦷</span>
+      <div class="navbar-brand">
+        <div class="navbar-logo">
+          <span>🦷</span>
+        </div>
+        <h1 class="navbar-title">Sonrisas Felices</h1>
       </div>
-      <h1 class="navbar-title">Sonrisas Felices</h1>
-    </div>
     </a>
     
     <nav class="navbar-nav">
       <a href="home" class="nav-link">Inicio</a>
       <a href="nosotros" class="nav-link">Nosotros</a>
-      <a href="citas" class="nav-link">Citas</a>
+      
+      <!-- Botón de Citas con verificación -->
+      
+      <a class="nav-link" (click)="navegarACitas()">Citas</a>
 
+      <!-- Mostrar Login o Logout según autenticación -->
+      <a *ngIf="!(isAuthenticated$ | async)" (click)="login()" class="nav-link login-btn">
+        👤
+      </a>
+      
       <a *ngIf="isAuthenticated$ | async" (click)="logout()" class="nav-link logout-btn">
-        Cerrar Sesión 
+        Cerrar Sesión
       </a>
     </nav>
-
   </div>
 </header>
+
+<div class="alert-overlay" *ngIf="showAlert" (click)="cerrarAlerta()">
+  <div class="alert-modal" (click)="$event.stopPropagation()">
+    <div class="alert-icon">⚠️</div>
+    <h3 class="alert-title">Registro Requerido</h3>
+    <p class="alert-message">
+      Para agendar una cita debes estar registrado en el sistema.
+    </p>
+    <div class="alert-buttons">
+      <button class="btn-alert-primary" (click)="irALogin()">
+        Iniciar Sesión
+      </button>
+      <button class="btn-alert-secondary" (click)="cerrarAlerta()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>

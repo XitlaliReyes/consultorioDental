@@ -8,13 +8,20 @@ import { Onboarding } from './pages/onboarding/onboarding';
 import { AuthGuard, MedicoGuard, PacienteGuard } from './guards/auth.guard';
 import { CitasMedico } from './pages/citas/citas-medico/citas-medico';
 
-// Importar todos los guards del mismo archivo
-
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  // Redirige a home sin requerir login
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  
+  // ========== RUTAS PÚBLICAS (SIN GUARDS) ==========
   { path: 'login', component: Login },
   { path: 'nosotros', component: Nosotros },
   { path: 'callback', component: CallbackComponent },
+  
+  // HOME - Accesible sin login
+  {
+    path: 'home',
+    loadComponent: () => import('./pages/public/home/home').then(m => m.Home)
+  },
   
   // ========== RUTAS DE ONBOARDING ==========
   {
@@ -23,34 +30,30 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   
-  // ========== RUTAS DE PACIENTES ==========
-  {
-    path: 'home',
-    loadComponent: () => import('./pages/public/home/home').then(m => m.Home),
-    canActivate: [AuthGuard, PacienteGuard] // Solo pacientes
-  },
+  // ========== RUTAS DE PACIENTES (REQUIEREN LOGIN Y ROL PACIENTE) ==========
   {
     path: 'citas',
     component: Calendario,
-    canActivate: [AuthGuard, PacienteGuard] // Solo pacientes
+    canActivate: [AuthGuard, PacienteGuard]
   },
   
-  // ========== RUTAS DE MÉDICOS ==========
+  // ========== RUTAS DE MÉDICOS (REQUIEREN LOGIN Y ROL MÉDICO) ==========
   {
     path: 'dashboard-medico',
     loadComponent: () => import('./pages/dashboard-medico/dashboard-medico').then(m => m.DashboardMedicoComponent),
-    canActivate: [AuthGuard, MedicoGuard] // Solo médicos
+    canActivate: [AuthGuard, MedicoGuard]
   },
   {
     path: 'citas-medico',
     component: CitasMedico,
-    canActivate: [AuthGuard, MedicoGuard] // Solo médicos
+    canActivate: [AuthGuard, MedicoGuard]
   },
   {
     path: 'historial-clinico/:idPaciente',
     loadComponent: () => import('./pages/historial-clinico/historial-clinico').then(m => m.HistorialClinico),
-    canActivate: [AuthGuard, MedicoGuard] // Solo médicos
+    canActivate: [AuthGuard, MedicoGuard]
   },
   
-  { path: '**', redirectTo: '/login' }
+  // Ruta por defecto redirige a home en lugar de login
+  { path: '**', redirectTo: '/home' }
 ];
