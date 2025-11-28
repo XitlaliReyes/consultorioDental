@@ -44,7 +44,7 @@ interface CitaResponse {
 })
 export class Calendario implements OnInit {
 
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'https://consultorio-backend-production-9816.up.railway.app';
 
   // Control de vista principal
   currentView: 'selection' | 'agendar' | 'mis-citas' = 'selection';

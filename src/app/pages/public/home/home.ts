@@ -53,37 +53,37 @@ export class Home implements OnInit {
       title: "Limpieza Dental",
       description: "Limpieza profunda y prevención de enfermedades bucales",
       icon: "🧽",
-      image: "/images/img10.jpeg"
+      image: "images/img10.jpeg"
     },
     {
       title: "Empaste Dental",
       description: "Restauración de piezas dentales dañadas por caries",
       icon: "✨",
-      image: "/images/img4.jpeg"
+      image: "images/img4.jpeg"
     },
     {
       title: "Extracción Dental",
       description: "Remoción de piezas dentales dañadas o no viables",
       icon: "🦷",
-      image: "/images/img7.jpeg"
+      image: "images/img7.jpeg"
     },
     {
       title: "Blanqueamiento Dental",
       description: "Tratamiento para aclarar el color de los dientes",
       icon: "🔧",
-      image: "/images/img11.jpeg"
+      image: "images/img11.jpeg"
     },
     {
       title: "Ortodoncia Inicial",
       description: "Consulta y diagnóstico para tratamiento de ortodoncia",
       icon: "🩺",
-      image: "/images/img5.jpeg"
+      image: "images/img5.jpeg"
     },
     {
       title: "Revisión Dental",
       description: "Chequeo general para evaluar la salud bucal",
       icon: "💎",
-      image: "/images/img1.jpeg"
+      image: "images/img1.jpeg"
     }
   ];
 

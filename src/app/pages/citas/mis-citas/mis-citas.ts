@@ -25,7 +25,7 @@ interface Cita {
 })
 export class MisCitasComponent implements OnInit {
   
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'https://consultorio-backend-production-9816.up.railway.app';
   citas: Cita[] = [];
   loading = true;
   error: string | null = null;

@@ -144,7 +144,7 @@ export class Api {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
 
-  private API_URL = 'http://localhost:3000/api'; // URL base general
+  private API_URL = 'https://consultorio-backend-production-9816.up.railway.app/api'; // URL base general
 
   // 1. Obtiene el rol del usuario autenticado
   getRole(): Observable<ProfileRoleResponse | null> {
