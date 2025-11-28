@@ -132,7 +132,7 @@
       </div>
 
       <!-- SECCIÓN: ANTECEDENTES PERSONALES -->
-      <div *ngIf="seccionActiva === 'antecedentes'" class="seccion-documento">
+      <!-- <div *ngIf="seccionActiva === 'antecedentes'" class="seccion-documento">
         <h2 class="seccion-titulo">ANTECEDENTES PERSONALES</h2>
         
         <div class="antecedentes-grid">
@@ -155,7 +155,181 @@
             {{ guardandoAntecedentes ? 'Guardando...' : 'Guardar Cambios' }}
           </button>
         </div>
+      </div> -->
+
+      <!-- Contenedor principal (asumiendo que los tabs están arriba) -->
+      <div class="historial-container">
+        
+        <!-- Contenido principal del documento -->
+        <div class="documento-content">
+
+          <div *ngIf="seccionActiva === 'antecedentes'" class="seccion-documento antecedentes-personales">
+            <h2 class="seccion-titulo">ANTECEDENTES PERSONALES</h2>
+            
+            <!-- NOTA IMPORTANTE: Si la lista 'tiposAntecedente' está vacía, 
+                NADA dentro del *ngIf de abajo se mostrará.
+                Verifica tu API para asegurarte de que está devolviendo la lista 
+                (Anemia, Diabetes, etc.) correctamente. -->
+
+            <!-- SECCIÓN 1: CHECKLIST DE ENFERMEDADES (2 Columnas) -->
+            <div *ngIf="tiposAntecedente.length > 0" class="antecedentes-checklist">
+              
+              <!-- Contenedor para la lista en grid de 2 columnas -->
+              <div class="antecedentes-grid-columnas">
+                <div *ngFor="let tipo of tiposAntecedente" class="antecedente-item">
+                  <div class="checkbox-container">
+                    <input 
+                      type="checkbox" 
+                      [id]="'ant_' + tipo.ID_Tipo"
+                      [(ngModel)]="antecedentesSeleccionados[tipo.ID_Tipo]"
+                    >
+                    <label [for]="'ant_' + tipo.ID_Tipo">{{ tipo.Nombre }}</label>
+                  </div>
+                  <!-- Simula el campo de texto (se podría añadir un input real si fuera necesario) -->
+                  <span class="linea-detalle"></span>
+                </div>
+              </div>
+            </div>
+            
+            <div *ngIf="tiposAntecedente.length === 0 && !cargando" class="mensaje-alerta">
+              <p>No se encontraron tipos de antecedentes para cargar el checklist.</p>
+            </div>
+
+            <hr class="divisor-antecedentes">
+
+            <!-- SECCIÓN 2: PREGUNTAS SÍ/NO (Estructura de tabla simple) -->
+            <div class="antecedentes-preguntas-sino">
+              <!-- Pregunta 1: Alergias -->
+              <div class="pregunta-row">
+                <p class="pregunta-texto">¿Alergia a alguna sustancia o medicamento?</p>
+                <div class="opciones-sino">
+                  <label>
+                    <input type="radio" name="alergiaSustancia" [value]="true" [(ngModel)]="otrasPreguntas.alergiaSustancia"> (SI)
+                  </label>
+                  <label>
+                    <input type="radio" name="alergiaSustancia" [value]="false" [(ngModel)]="otrasPreguntas.alergiaSustancia"> (NO)
+                  </label>
+                </div>
+              </div>
+
+              <!-- Pregunta 2: Anestesia Dental -->
+              <div class="pregunta-row">
+                <p class="pregunta-texto">¿Alergia a la anestesia dental?</p>
+                <div class="opciones-sino">
+                  <label>
+                    <input type="radio" name="alergiaAnestesia" [value]="true" [(ngModel)]="otrasPreguntas.alergiaAnestesia"> (SI)
+                  </label>
+                  <label>
+                    <input type="radio" name="alergiaAnestesia" [value]="false" [(ngModel)]="otrasPreguntas.alergiaAnestesia"> (NO)
+                  </label>
+                </div>
+              </div>
+
+              <!-- Pregunta 3: Bajo tratamiento -->
+              <div class="pregunta-row">
+                <p class="pregunta-texto">¿Actualmente está bajo algún tratamiento?</p>
+                <div class="opciones-sino">
+                  <label>
+                    <input type="radio" name="bajoTratamiento" [value]="true" [(ngModel)]="otrasPreguntas.bajoTratamiento"> (SI)
+                  </label>
+                  <label>
+                    <input type="radio" name="bajoTratamiento" [value]="false" [(ngModel)]="otrasPreguntas.bajoTratamiento"> (NO)
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Pregunta 4: Intervención Quirúrgica -->
+              <div class="pregunta-row">
+                <p class="pregunta-texto">¿Ha sido intervenido quirúrgicamente?</p>
+                <div class="opciones-sino">
+                  <label>
+                    <input type="radio" name="intervenidoQx" [value]="true" [(ngModel)]="otrasPreguntas.intervenidoQx"> (SI)
+                  </label>
+                  <label>
+                    <input type="radio" name="intervenidoQx" [value]="false" [(ngModel)]="otrasPreguntas.intervenidoQx"> (NO)
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Pregunta 5: Enfermedad Grave -->
+              <div class="pregunta-row">
+                <p class="pregunta-texto">¿Padece alguna enfermedad grave no mencionada?</p>
+                <div class="opciones-sino">
+                  <label>
+                    <input type="radio" name="enfGrave" [value]="true" [(ngModel)]="otrasPreguntas.enfGraveNoMencionada"> (SI)
+                  </label>
+                  <label>
+                    <input type="radio" name="enfGrave" [value]="false" [(ngModel)]="otrasPreguntas.enfGraveNoMencionada"> (NO)
+                  </label>
+                </div>
+              </div>
+
+              <!-- Pregunta 6: Embarazo (Solo si el paciente es mujer) -->
+              <div class="pregunta-row" *ngIf="esPacienteMujer">
+                <p class="pregunta-texto">¿Está embarazada?</p>
+                <div class="opciones-sino">
+                  <label>
+                    <input type="radio" name="embarazada" [value]="true" [(ngModel)]="otrasPreguntas.embarazada"> (SI)
+                  </label>
+                  <label>
+                    <input type="radio" name="embarazada" [value]="false" [(ngModel)]="otrasPreguntas.embarazada"> (NO)
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Pregunta 7: Alcohol -->
+              <div class="pregunta-row">
+                <p class="pregunta-texto">¿Consume bebidas alcohólica?</p>
+                <div class="opciones-sino">
+                  <label>
+                    <input type="radio" name="alcohol" [value]="true" [(ngModel)]="otrasPreguntas.consumeAlcohol"> (SI)
+                  </label>
+                  <label>
+                    <input type="radio" name="alcohol" [value]="false" [(ngModel)]="otrasPreguntas.consumeAlcohol"> (NO)
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Pregunta 8: Fuma -->
+              <div class="pregunta-row">
+                <p class="pregunta-texto">¿Fuma?</p>
+                <div class="opciones-sino">
+                  <label>
+                    <input type="radio" name="fuma" [value]="true" [(ngModel)]="otrasPreguntas.fuma"> (SI)
+                  </label>
+                  <label>
+                    <input type="radio" name="fuma" [value]="false" [(ngModel)]="otrasPreguntas.fuma"> (NO)
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Pregunta 9: Drogas -->
+              <div class="pregunta-row">
+                <p class="pregunta-texto">¿Consume algún tipo de droga?</p>
+                <div class="opciones-sino">
+                  <label>
+                    <input type="radio" name="drogas" [value]="true" [(ngModel)]="otrasPreguntas.consumeDrogas"> (SI)
+                  </label>
+                  <label>
+                    <input type="radio" name="drogas" [value]="false" [(ngModel)]="otrasPreguntas.consumeDrogas"> (NO)
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button 
+                class="btn-guardar" 
+                (click)="guardarAntecedentesPersonales()"
+                [disabled]="guardandoAntecedentes"
+              >
+                {{ guardandoAntecedentes ? 'Guardando...' : 'Guardar Cambios' }}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
 
       <!-- SECCIÓN: ANTECEDENTES ODONTOLÓGICOS -->
       <div *ngIf="seccionActiva === 'odonto'" class="seccion-documento">
@@ -301,6 +475,7 @@
           </div>
         </div>
       </div>
+    
 
       <!-- SECCIÓN: NOTA DE EVOLUCIÓN -->
       <div *ngIf="seccionActiva === 'evolucion'" class="seccion-documento">

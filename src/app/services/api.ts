@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from '@auth0/auth0-angular';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 
@@ -271,12 +271,14 @@ export class Api {
         const headers = { Authorization: `Bearer ${token}` };
         return this.http.get<AntecedenteTipo[]>(`${this.API_URL}/antecedente/tipos`, { headers });
       }),
+      tap(tipos => console.log('Tipos obtenidos (tap):', tipos)), // <--- aquí ves los datos
       catchError(err => {
         console.error('Error al obtener tipos de antecedente:', err);
         return of([]);
       })
     );
   }
+
 
   // Antecedentes médicos del paciente (paciente_antecedente)
   getAntecedentesMedicos(idPaciente: number): Observable<PacienteAntecedente[]> {

@@ -494,3 +494,139 @@
     background: white;
   }
 }
+/* Estilos generales de la sección */
+.seccion-documento {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.seccion-titulo {
+    font-size: 1.5rem;
+    color: #333;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* --- SECCIÓN 1: CHECKLIST DE ENFERMEDADES (2 COLUMNAS) --- */
+.antecedentes-checklist {
+    margin-bottom: 30px;
+}
+
+.antecedentes-grid-columnas {
+    display: grid;
+    /* Divide en dos columnas de igual ancho */
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px 50px; /* Espacio vertical y horizontal */
+}
+
+.antecedente-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1rem;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; /* Evita que el texto se encoja */
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+    /* Aumentar tamaño para mejor usabilidad táctil */
+    transform: scale(1.2); 
+    cursor: pointer;
+}
+
+.linea-detalle {
+    /* Simula la línea de la imagen */
+    flex-grow: 1; 
+    border-bottom: 1px solid #ccc;
+    margin-left: 10px;
+}
+
+/* --- SECCIÓN 2: PREGUNTAS SÍ/NO --- */
+.divisor-antecedentes {
+    border: 0;
+    height: 1px;
+    background-color: #ccc;
+    margin: 20px 0;
+}
+
+.antecedentes-preguntas-sino {
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.pregunta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    /* Solo el border-bottom para simular filas de tabla */
+    border-bottom: 1px solid #f5f5f5; 
+    background-color: #fafafa;
+}
+
+.pregunta-row:last-child {
+    border-bottom: none;
+}
+
+.pregunta-texto {
+    margin: 0;
+    font-weight: 500;
+    color: #444;
+}
+
+.opciones-sino label {
+    margin-left: 25px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.opciones-sino input[type="radio"] {
+    margin-right: 5px;
+    transform: scale(1.1);
+}
+
+/* --- ACCIONES --- */
+.form-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.btn-guardar {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #28a745; /* Verde de éxito */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.btn-guardar:hover:not([disabled]) {
+    background-color: #218838;
+}
+
+.btn-guardar[disabled] {
+    background-color: #90d89e;
+    cursor: not-allowed;
+}
+
+.mensaje-alerta {
+    padding: 15px;
+    border: 1px solid #ffcc00;
+    background-color: #fffacd;
+    color: #856404;
+    border-radius: 4px;
+    text-align: center;
+}
