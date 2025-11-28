@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { Api } from '../../../services/api';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ import { Api } from '../../../services/api';
 export class Home implements OnInit {
   private auth = inject(AuthService);
   private api = inject(Api);
+  private router = inject(Router);
   
   userName: string = '';
   userEmail: string = '';
@@ -27,18 +29,18 @@ export class Home implements OnInit {
   ngOnInit() {
     // Obtener información del usuario
     this.api.getRole().subscribe({
-    next: (response) => {   // response tiene tipo ProfileRoleResponse | null
-      if (response) {       // filtramos null
-        this.userName = response.nombre;
-        this.userEmail = response.correo || '';
-      } else {
-        console.warn('No hay datos de usuario');
-      }
-    },
-    error: (error: any) => {
-      console.error('Error al obtener datos del usuario:', error);
-    }
-});
+        next: (response) => {   // response tiene tipo ProfileRoleResponse | null
+          if (response) {       // filtramos null
+            this.userName = response.nombre;
+            this.userEmail = response.correo || '';
+          } else {
+            console.warn('No hay datos de usuario');
+          }
+        },
+        error: (error: any) => {
+          console.error('Error al obtener datos del usuario:', error);
+        }
+    });
 
   }
 
@@ -54,42 +56,50 @@ export class Home implements OnInit {
     return service.title;
   }
 
+  irACitas() {
+    this.router.navigate(['/citas']);
+  }
+
+  irNosotros() {
+    this.router.navigate(['/nosotros']);
+  }
+
   services = [
     {
       title: "Limpieza Dental",
       description: "Limpieza profunda y prevención de enfermedades bucales",
       icon: "🧽",
-      image: "https://images.unsplash.com/photo-1629909613638-0e4a1fad8f81?w=300&h=300&fit=crop"
+      image: "/images/img10.jpeg"
     },
     {
-      title: "Blanqueamiento",
-      description: "Tratamientos avanzados para una sonrisa más blanca",
+      title: "Empaste Dental",
+      description: "Restauración de piezas dentales dañadas por caries",
       icon: "✨",
-      image: "https://images.unsplash.com/photo-1675526607070-f5cbd71dde92?w=300&h=300&fit=crop"
+      image: "/images/img4.jpeg"
     },
     {
-      title: "Ortodoncia",
-      description: "Alineación dental con tecnología moderna",
+      title: "Extracción Dental",
+      description: "Remoción de piezas dentales dañadas o no viables",
       icon: "🦷",
-      image: "https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8?w=300&h=300&fit=crop"
+      image: "/images/img7.jpeg"
     },
     {
-      title: "Implantes",
-      description: "Soluciones permanentes para dientes perdidos",
+      title: "Blanqueamiento Dental",
+      description: "Tratamiento para aclarar el color de los dientes",
       icon: "🔧",
-      image: "https://images.unsplash.com/photo-1629909613638-0e4a1fad8f81?w=300&h=300&fit=crop"
+      image: "/images/img11.jpeg"
     },
     {
-      title: "Endodoncia",
-      description: "Tratamiento de conductos con máxima comodidad",
+      title: "Ortodoncia Inicial",
+      description: "Consulta y diagnóstico para tratamiento de ortodoncia",
       icon: "🩺",
-      image: "https://images.unsplash.com/photo-1629909613638-0e4a1fad8f81?w=300&h=300&fit=crop"
+      image: "/images/img5.jpeg"
     },
     {
-      title: "Estética Dental",
-      description: "Diseños de sonrisa personalizados",
+      title: "Revisión Dental",
+      description: "Chequeo general para evaluar la salud bucal",
       icon: "💎",
-      image: "https://images.unsplash.com/photo-1675526607070-f5cbd71dde92?w=300&h=300&fit=crop"
+      image: "/images/img1.jpeg"
     }
   ];
 

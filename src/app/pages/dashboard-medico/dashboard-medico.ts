@@ -72,8 +72,8 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
     verHistorial(id: number) {
-    this.router.navigate(['/historial-clinico', id]);
-  }
+      this.router.navigate(['/historial-clinico', id]);
+    }
 
 
   cargarCitasPendientes() {
