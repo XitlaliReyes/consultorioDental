@@ -29,6 +29,7 @@ export class DashboardMedicoComponent implements OnInit {
   totalCitasPendientes = 0;
   citasHoy = 0;
   citasEstaSemana = 0;
+  citasEsteMes = 0;
   procesandoCita: number | null = null;
   
   // NUEVAS PROPIEDADES PARA PACIENTES
@@ -47,7 +48,6 @@ export class DashboardMedicoComponent implements OnInit {
           this.medicoApellidos = response.apellidos || '';
           this.medicoCorreo = response.correo || '';
           this.cargarMisCitas();
-          this.cargarCitasPendientes();
         }
       },
       error: (error) => {
@@ -76,20 +76,6 @@ export class DashboardMedicoComponent implements OnInit {
     }
 
 
-  cargarCitasPendientes() {
-    this.api.getCitasPendientes().subscribe({
-      next: (servicios) => {
-        this.totalCitasPendientes = servicios.reduce(
-          (total, servicio) => total + servicio.citas.length,
-          0
-        );
-      },
-      error: (error) => {
-        console.error('Error al cargar citas pendientes:', error);
-      }
-    });
-  }
-  
   // NUEVO MÉTODO: Cargar lista de pacientes
   cargarMisPacientes() {
     this.isLoadingPacientes = true;
@@ -130,32 +116,45 @@ export class DashboardMedicoComponent implements OnInit {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
+    // --- Semana actual ---
     const inicioSemana = new Date(hoy);
-    inicioSemana.setDate(hoy.getDate() - hoy.getDay());
+    inicioSemana.setDate(hoy.getDate() - hoy.getDay()); // Domingo
 
     const finSemana = new Date(inicioSemana);
-    finSemana.setDate(inicioSemana.getDate() + 7);
+    finSemana.setDate(inicioSemana.getDate() + 7); // Siguiente domingo
 
+    // --- Mes actual ---
+    const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    const finMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1); // Primer día del siguiente mes
+
+    // ---- HOY ----
     this.citasHoy = this.misCitas.filter((cita) => {
       const fechaCita = new Date(cita.Fecha);
       fechaCita.setHours(0, 0, 0, 0);
       return fechaCita.getTime() === hoy.getTime();
     }).length;
 
+    // ---- SEMANA ----
     this.citasEstaSemana = this.misCitas.filter((cita) => {
       const fechaCita = new Date(cita.Fecha);
+      fechaCita.setHours(0, 0, 0, 0);
       return fechaCita >= inicioSemana && fechaCita < finSemana;
     }).length;
+
+    // ---- MES ----
+    this.citasEsteMes = this.misCitas.filter((cita) => {
+      const fechaCita = new Date(cita.Fecha);
+      fechaCita.setHours(0, 0, 0, 0);
+      return fechaCita >= inicioMes && fechaCita < finMes;
+    }).length;
   }
+
 
   // MODIFICAR MÉTODO navegarA
   navegarA(vista: 'dashboard' | 'citas' | 'pacientes' | 'paciente-detalle') {
     this.vistaActual = vista;
     this.pacienteSeleccionado = null; // Limpiar detalle al cambiar de vista principal
     
-    if (vista === 'citas') {
-      this.cargarCitasPendientes();
-    }
     
     if (vista === 'pacientes') {
       this.cargarMisPacientes(); // Cargar la lista al entrar a la vista
