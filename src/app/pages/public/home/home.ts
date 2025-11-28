@@ -133,6 +133,6 @@ export class Home implements OnInit {
 
   irALogin(): void {
     this.showAlert = false;
-    this.auth.loginWithRedirect();
+    this.router.navigate(['/login']);
   }
 }
