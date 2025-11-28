@@ -83,7 +83,6 @@ export class Calendario implements OnInit {
 
   ngOnInit(): void {
     this.cargarServicios();
-    this.cargarMedicos();
     this.generarCalendario();
   }
   
@@ -95,7 +94,6 @@ export class Calendario implements OnInit {
     this.currentView = view;
     if (view === 'agendar') {
       this.cargarServicios();
-      this.cargarMedicos();
       this.resetearFlujo();
     }
   }
@@ -109,16 +107,18 @@ export class Calendario implements OnInit {
   // LÓGICA DE SELECCIÓN: SERVICIO Y MÉDICO
   // ===================================
 
-  cargarMedicos(): void {
-    this.http.get<Medico[]>(`${this.apiUrl}/api/medicos`).subscribe({
-      next: (data) => {
-        this.medicos = data;
-      },
-      error: (err) => {
-        console.error('Error al cargar médicos:', err);
-      }
-    });
+  cargarMedicos(idServicioSeleccionad: number): void {
+    this.http.get<Medico[]>(`${this.apiUrl}/api/medicos/servicio/${idServicioSeleccionad}`)
+      .subscribe({
+        next: (data) => {
+          this.medicos = data;
+        },
+        error: (err) => {
+          console.error('Error al cargar médicos:', err);
+        }
+      });
   }
+
 
   cargarServicios(): void {
     this.http.get<Servicio[]>(`${this.apiUrl}/api/servicios`).subscribe({
@@ -134,6 +134,7 @@ export class Calendario implements OnInit {
   seleccionarServicio(servicio: Servicio): void {
     this.idServicioSeleccionado = servicio.ID_Servicio;
     this.nombreServicioSeleccionado = servicio.Nombre;
+    this.cargarMedicos(servicio.ID_Servicio)
     this.pasoActual = 2;
   }
 
