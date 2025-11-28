@@ -17,31 +17,28 @@ export class App {
 
   constructor(private router: Router) {
 
-    const shouldHideNavbar = (url: string): boolean => {
-      const rutasSinNavbar = [
-        '/login',
-        '/',
-        '/callback',
-        '/dashboard-medico',
-        '/citas-medico',
-        '/historial-clinico'
-      ];
-      
-      return rutasSinNavbar.some(ruta => 
-        url === ruta || url.startsWith(ruta)
-      );
-    };
+  const shouldHideNavbar = (url: string): boolean => {
+    const rutasSinNavbar = [
+      '/login',
+      '/dashboard-medico',
+      '/citas-medico',
+      '/historial-clinico'
+    ];
+    
+    return rutasSinNavbar.some(ruta => 
+      url === ruta || url.startsWith(ruta)
+    );
+  };
 
-    // 1. ESTABLECER ESTADO INICIAL (al cargar la página, sin esperar eventos)
-    const initialUrl = this.router.url;
-    this.isLoginPage = shouldHideNavbar(initialUrl);
+  // Estado inicial
+  this.isLoginPage = shouldHideNavbar(this.router.url);
 
-    // 2. SUSCRIBIRSE A CAMBIOS FUTUROS (navegación interna)
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        const currentUrl = event.url;
-        this.isLoginPage = shouldHideNavbar(currentUrl);
-      }
-    });
-  }
+  // Escuchar navegación
+  this.router.events.subscribe(event => {
+    if (event instanceof NavigationEnd) {
+      this.isLoginPage = shouldHideNavbar(event.urlAfterRedirects);
+    }
+  });
+}
+
 }
