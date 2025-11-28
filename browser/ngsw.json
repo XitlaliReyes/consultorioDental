@@ -1,0 +1,115 @@
+{
+  "configVersion": 1,
+  "timestamp": 1764343075480,
+  "index": "/consultorioDental/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/consultorioDental/chunk-5N6MDBI3.js",
+        "/consultorioDental/chunk-EHPZXCSR.js",
+        "/consultorioDental/chunk-FPKY227V.js",
+        "/consultorioDental/chunk-LIDU4QIR.js",
+        "/consultorioDental/chunk-V6D4ZGTB.js",
+        "/consultorioDental/chunk-VZFNWSRJ.js",
+        "/consultorioDental/chunk-WYBMJEXJ.js",
+        "/consultorioDental/favicon.ico",
+        "/consultorioDental/index.html",
+        "/consultorioDental/main-NCL7NOQW.js",
+        "/consultorioDental/manifest.webmanifest",
+        "/consultorioDental/polyfills-5CFQRCPP.js",
+        "/consultorioDental/styles-5INURTSO.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/consultorioDental/favicon.png",
+        "/consultorioDental/icons/icon-128x128.png",
+        "/consultorioDental/icons/icon-144x144.png",
+        "/consultorioDental/icons/icon-152x152.png",
+        "/consultorioDental/icons/icon-180x180.png",
+        "/consultorioDental/icons/icon-192x192.png",
+        "/consultorioDental/icons/icon-310x310.png",
+        "/consultorioDental/icons/icon-384x384.png",
+        "/consultorioDental/icons/icon-512x512.png",
+        "/consultorioDental/icons/icon-72x72.png",
+        "/consultorioDental/icons/icon-96x96.png",
+        "/consultorioDental/images/img1.jpeg",
+        "/consultorioDental/images/img10.jpeg",
+        "/consultorioDental/images/img11.jpeg",
+        "/consultorioDental/images/img4.jpeg",
+        "/consultorioDental/images/img5.jpeg",
+        "/consultorioDental/images/img7.jpeg",
+        "/consultorioDental/images/img8.jpeg",
+        "/consultorioDental/images/logdental.jpg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/consultorioDental/chunk-5N6MDBI3.js": "54a44ae67d7f39124ae344b8cefcb7ccf6a5947d",
+    "/consultorioDental/chunk-EHPZXCSR.js": "1ff32ac56172b2b0869c09bc46f9ed3cb18f1673",
+    "/consultorioDental/chunk-FPKY227V.js": "056274418e1849a73ce11d18dc68196e629cb7a1",
+    "/consultorioDental/chunk-LIDU4QIR.js": "9feaa55a2f76c2418fd6a02f0488b4e5347bbc44",
+    "/consultorioDental/chunk-V6D4ZGTB.js": "507f808a757231da4ec9bf220424bbd8b370d159",
+    "/consultorioDental/chunk-VZFNWSRJ.js": "01750420ddadcdb4d3658de6addb3c68221c607e",
+    "/consultorioDental/chunk-WYBMJEXJ.js": "8f790c0b7974092a2590df9ca3bbf76b7640b3b4",
+    "/consultorioDental/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/consultorioDental/favicon.png": "d1d54d680a71ac2efcc091751f87a3f4f9ca6af0",
+    "/consultorioDental/icons/icon-128x128.png": "f912963bdc6d5a38d8f1dd0afbaab2ce8d657acb",
+    "/consultorioDental/icons/icon-144x144.png": "42b7f384ef4ef37a861021f7e2dca1c3fc475a07",
+    "/consultorioDental/icons/icon-152x152.png": "d3a14e378165ee94f83c03b5f9679e169061977a",
+    "/consultorioDental/icons/icon-180x180.png": "5d96dcc59f0a7215afb55ddf0b6ca489fa957be0",
+    "/consultorioDental/icons/icon-192x192.png": "e37150b15081e5ef2277b7f0429e9262e1ba8fb1",
+    "/consultorioDental/icons/icon-310x310.png": "29c8a079d074b87cbbb05993cc337ae482459a44",
+    "/consultorioDental/icons/icon-384x384.png": "94a915751ef6c9282df9aea405ad679230631814",
+    "/consultorioDental/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
+    "/consultorioDental/icons/icon-72x72.png": "522972e4f278ae3b6ec7fb8928a89b25e33cbb22",
+    "/consultorioDental/icons/icon-96x96.png": "edcf608982c79433b966fd4b1912b12998c83b63",
+    "/consultorioDental/images/img1.jpeg": "34ea0675b05b967e1a0c7a7ec5ae0c2dcdc6e242",
+    "/consultorioDental/images/img10.jpeg": "c37e2ceeed2eb0e1f54048bcd1a249da1dbeaa60",
+    "/consultorioDental/images/img11.jpeg": "328755d219443151ebc18ec51b0e30c32bc1ba8d",
+    "/consultorioDental/images/img4.jpeg": "62ad4ecfc4dcc1351423449b2cde4a541ee035f7",
+    "/consultorioDental/images/img5.jpeg": "0bfcef8da836c17cd103dd3af97703d8005f27b2",
+    "/consultorioDental/images/img7.jpeg": "5d42de33a54e4aafbca62b59c2e54d2c451b9639",
+    "/consultorioDental/images/img8.jpeg": "5f9c238f334aab3008072eff414fbdce24dbcbec",
+    "/consultorioDental/images/logdental.jpg": "83e34678248b3d9830d8e201f15df0a0e439511b",
+    "/consultorioDental/index.html": "c42fbdde107c53cffc63adb8b36bd364a6232dc0",
+    "/consultorioDental/main-NCL7NOQW.js": "6b85e712454b89b780bcb86d1f2bf59f361db1f9",
+    "/consultorioDental/manifest.webmanifest": "c788e73b93577a63ae969dd151935109ad07feed",
+    "/consultorioDental/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
+    "/consultorioDental/styles-5INURTSO.css": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
