@@ -3,7 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #66baea 0%, #6bc9ff 100%);
     padding: 20px;
   }
   
@@ -55,7 +55,7 @@
   .role-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-color: #667eea;
+    border-color: #007bff;
   }
   
   .role-icon {
@@ -104,7 +104,7 @@
   .form-group input:focus,
   .form-group select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #007bff;
   }
   
   .form-row {
@@ -132,7 +132,7 @@
   }
   
   .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0056b3 0%, #007bff 100%);
     color: white;
   }
   
@@ -203,4 +203,75 @@
   background-color: #f8f9fa;
   border-color: #ced4da;
   box-shadow: none;
+}
+
+.cedula-group {
+  position: relative;
+}
+
+.cedula-input-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.cedula-input-wrapper input {
+  flex: 1;
+}
+
+.cedula-input-wrapper input.verified {
+  border-color: #28a745;
+  background-color: #f0fff4;
+}
+
+.btn-verify-cedula {
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.btn-verify-cedula:hover:not(:disabled) {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-verify-cedula:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-verify-cedula.verified {
+  background-color: #28a745;
+  cursor: default;
+}
+
+.btn-verify-cedula.verified:hover {
+  background-color: #28a745;
+  transform: none;
+}
+
+.success-message {
+  display: block;
+  color: #28a745;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.help-text {
+  display: block;
+  color: #6c757d;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  font-style: italic;
 }

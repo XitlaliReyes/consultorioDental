@@ -22,7 +22,9 @@ export class App {
       '/login',
       '/dashboard-medico',
       '/citas-medico',
-      '/historial-clinico'
+      '/historial-clinico',
+      '/onboarding',
+      '/callback'
     ];
     
     return rutasSinNavbar.some(ruta => 

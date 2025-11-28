@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Api } from '../../services/api';
 import { AuthService } from '@auth0/auth0-angular';
+import { CedulaVerificationService } from '../../services/cedula-verification.service';
 
 @Component({
   selector: 'app-onboarding',
@@ -16,10 +17,13 @@ export class Onboarding implements OnInit {
   private api = inject(Api);
   private router = inject(Router);
   private auth = inject(AuthService);
+  private cedulaService = inject(CedulaVerificationService);
 
   selectedRole: 'Medico' | 'Paciente' | null = null;
   isSubmitting = false;
-  
+  isVerifyingCedula = false;
+  cedulaVerified = false;
+
   // Datos para Médico
   medicoData = {
     nombre: '',
@@ -47,6 +51,7 @@ export class Onboarding implements OnInit {
   errors: any = {};
 
   ngOnInit() {
+    document.body.classList.add('hide-layout');
     // Obtener el correo del usuario autenticado de Auth0
     this.auth.user$.subscribe(user => {
       if (user?.email) {
@@ -59,6 +64,7 @@ export class Onboarding implements OnInit {
   selectRole(role: 'Medico' | 'Paciente') {
     this.selectedRole = role;
     this.errors = {}; // Limpiar errores al cambiar de rol
+    this.cedulaVerified = false;
   }
 
   // Validaciones
@@ -194,6 +200,58 @@ export class Onboarding implements OnInit {
     return true;
   }
 
+  /**
+   * Verificar cédula profesional con la SEP
+   */
+  verificarCedulaProfesional() {
+    if (!this.validateCedula(this.medicoData.cedula)) {
+      return;
+    }
+
+    if (!this.validateNombre(this.medicoData.nombre, 'nombre') || 
+        !this.validateNombre(this.medicoData.apellidos, 'apellidos')) {
+      alert('Por favor completa el nombre y apellidos antes de verificar la cédula');
+      return;
+    }
+
+    this.isVerifyingCedula = true;
+    this.cedulaVerified = false;
+    delete this.errors.cedula;
+
+    // OPCIÓN 1: Usar API pública de la SEP (puedes cambiar por otra opción)
+    this.cedulaService.verificarCedula(
+      this.medicoData.cedula,
+      this.medicoData.nombre,
+      this.medicoData.apellidos
+    ).subscribe({
+      next: (result) => {
+        this.isVerifyingCedula = false;
+        
+        if (result.isValid && result.data) {
+          this.cedulaVerified = true;
+          alert(`✅ Cédula verificada correctamente\n\nProfesión: ${result.data.profesion}\nInstitución: ${result.data.institucion}`);
+          
+          // Opcional: Autocompletar datos si coinciden
+          if (result.data.nombre && result.data.apellidos) {
+            const confirmAutoComplete = confirm('¿Deseas usar los datos registrados en la SEP?');
+            if (confirmAutoComplete) {
+              this.medicoData.nombre = result.data.nombre;
+              this.medicoData.apellidos = result.data.apellidos;
+            }
+          }
+        } else {
+          this.errors.cedula = result.error || 'No se pudo verificar la cédula';
+          alert('❌ ' + this.errors.cedula + '\n\nPor favor verifica que:\n- La cédula sea correcta\n- El nombre y apellidos coincidan con el registro\n- El registro esté actualizado en la SEP');
+        }
+      },
+      error: (error) => {
+        this.isVerifyingCedula = false;
+        this.errors.cedula = 'Error al verificar la cédula. Intenta nuevamente.';
+        console.error('Error en verificación de cédula:', error);
+      }
+    });
+  }
+
   validateMedicoForm(): boolean {
     let isValid = true;
     
@@ -204,6 +262,11 @@ export class Onboarding implements OnInit {
     isValid = this.validateCedula(this.medicoData.cedula) && isValid;
     isValid = this.validateExperiencia(this.medicoData.experiencia) && isValid;
 
+    // Verificar que la cédula haya sido verificada
+    if (!this.cedulaVerified) {
+      this.errors.cedula = 'Debes verificar tu cédula profesional antes de continuar';
+      isValid = false;
+    }
     return isValid;
   }
 

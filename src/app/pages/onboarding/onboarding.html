@@ -212,19 +212,37 @@
       </div>
 
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group cedula-group">
           <label>Cédula Profesional *</label>
-          <input 
-            type="text" 
-            [(ngModel)]="medicoData.cedula" 
-            name="cedula" 
-            maxlength="10"
-            (blur)="validateCedula(medicoData.cedula)"
-            [class.error]="errors.cedula"
-            placeholder="5-10 caracteres"
-            required>
+          <div class="cedula-input-wrapper">
+            <input 
+              type="text" 
+              [(ngModel)]="medicoData.cedula" 
+              name="cedula" 
+              maxlength="10"
+              (blur)="validateCedula(medicoData.cedula)"
+              [class.error]="errors.cedula"
+              [class.verified]="cedulaVerified"
+              placeholder="5-10 caracteres"
+              required>
+            <button 
+              type="button" 
+              class="btn-verify-cedula"
+              (click)="verificarCedulaProfesional()"
+              [disabled]="isVerifyingCedula || cedulaVerified || !medicoData.cedula"
+              [class.verified]="cedulaVerified">
+              <span *ngIf="!isVerifyingCedula && !cedulaVerified">🔍 Verificar</span>
+              <span *ngIf="isVerifyingCedula">⏳ Verificando...</span>
+              <span *ngIf="cedulaVerified">✅ Verificada</span>
+            </button>
+          </div>
+          <span class="success-message" *ngIf="cedulaVerified">✓ Cédula verificada con la SEP</span>
           <span class="error-message" *ngIf="errors.cedula">{{ errors.cedula }}</span>
+          <span class="help-text" *ngIf="!cedulaVerified && !errors.cedula">
+            Debes verificar tu cédula profesional con la SEP
+          </span>
         </div>
+
 
         <div class="form-group">
           <label>Años de Experiencia *</label>
