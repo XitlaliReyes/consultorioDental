@@ -17,9 +17,6 @@
            class="nav-item">
             <span class="icon fa-solid fa-users"></span> Pacientes
         </a>
-        <a href="#" class="nav-item">
-            <span class="icon fa-regular fa-clipboard-list"></span> Historiales
-        </a>
 
         
         <a class="nav-item logout" (click)="logout()">
@@ -128,15 +125,10 @@
 
     <div *ngIf="vistaActual === 'pacientes'">
         <header class="dashboard-header">
-            <h1>Mis Pacientes Asignados</h1>
+            <h1>Mis Pacientes</h1>
         </header>
 
         <section class="card">
-            <div class="card-header">
-                <h2 class="card-title">Pacientes Únicos</h2>
-                <button class="btn-refresh" (click)="cargarMisPacientes()">🔄</button>
-            </div>
-
             <div *ngIf="isLoadingPacientes" class="loading-state">
                 <p>Cargando lista de pacientes...</p>
             </div>
