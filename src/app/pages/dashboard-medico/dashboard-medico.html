@@ -185,17 +185,25 @@
                   <p>Sexo<span class="detalle-valor">{{ pacienteSeleccionado.Sexo === 'M' ? 'Masculino' : 'Femenino' }}</span></p>
                   <p>Ocupación<span class="detalle-valor">{{ pacienteSeleccionado.Ocupacion }}</span></p>
               </div>
+              <!-- 
               <div>
                   <strong>Ubicación</strong>
                   <p>Dirección<span class="detalle-valor">{{ pacienteSeleccionado.Direccion }}</span></p>
                   <p>Ciudad<span class="detalle-valor">{{ pacienteSeleccionado.Ciudad }}</span></p>
                   <p>C.P.<span class="detalle-valor">{{ pacienteSeleccionado.Codigo_Postal }}</span></p>
-              </div>
+              </div> -->
           </div>
           
           <div class="paciente-acciones">
-              <button class="btn btn-secondary">Ver Historial Clínico</button>
+            <button 
+              class="btn btn-secondary"
+              (click)="verHistorial(pacienteSeleccionado.ID_Paciente)"
+            >
+              Historial Clínico
+            </button>
           </div>
+
+
       </section>
 
         <div *ngIf="!isLoadingDetalle && !pacienteSeleccionado" class="error-state">

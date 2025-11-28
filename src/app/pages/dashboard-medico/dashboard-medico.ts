@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
-// IMPORTAR LAS NUEVAS INTERFACES
 import { Api, CitaMedico, PacienteBasico, PacienteDetalle } from '../../services/api'; 
 import { Router } from '@angular/router';
 import { CitasMedico } from '../citas/citas-medico/citas-medico';
@@ -71,6 +70,11 @@ export class DashboardMedicoComponent implements OnInit {
       }
     });
   }
+
+    verHistorial(id: number) {
+    this.router.navigate(['/historial-clinico', id]);
+  }
+
 
   cargarCitasPendientes() {
     this.api.getCitasPendientes().subscribe({

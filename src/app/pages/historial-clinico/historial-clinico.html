@@ -1,0 +1,408 @@
+<!-- NAVBAR MÉDICO -->
+<nav class="navbar-medico">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <h2>🏥 Historia Clínica</h2>
+    </div>
+    
+    <div class="navbar-info">
+      <span class="medico-nombre">Dr(a). {{ medicoNombre }} {{ medicoApellidos }}</span>
+      <button class="btn-volver" (click)="volverAlDashboard()">
+        ← Volver al Dashboard
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="historial-wrapper">
+  
+  <!-- CARGANDO -->
+  <div *ngIf="cargando" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando historia clínica...</p>
+  </div>
+
+  <!-- ERROR -->
+  <div *ngIf="error && !cargando" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <h3>{{ error }}</h3>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div *ngIf="!cargando && !error && paciente" class="historial-content">
+    
+    <!-- TABS DE NAVEGACIÓN -->
+    <div class="tabs-navigation">
+      <button 
+        [class.active]="seccionActiva === 'datos'"
+        (click)="cambiarSeccion('datos')"
+        class="tab-btn"
+      >
+        📋 Datos del Paciente
+      </button>
+      <button 
+        [class.active]="seccionActiva === 'antecedentes'"
+        (click)="cambiarSeccion('antecedentes')"
+        class="tab-btn"
+      >
+        🩺 Antecedentes Personales
+      </button>
+      <button 
+        [class.active]="seccionActiva === 'odonto'"
+        (click)="cambiarSeccion('odonto')"
+        class="tab-btn"
+      >
+        🦷 Antecedentes Odontológicos
+      </button>
+      <button 
+        [class.active]="seccionActiva === 'evolucion'"
+        (click)="cambiarSeccion('evolucion')"
+        class="tab-btn"
+      >
+        📝 Nota de Evolución
+      </button>
+    </div>
+
+    <!-- DOCUMENTO DE HISTORIA CLÍNICA -->
+    <div class="documento-clinico">
+      
+      <!-- ENCABEZADO DEL DOCUMENTO -->
+      <div class="documento-header">
+        <h1>HISTORIA CLÍNICA</h1>
+        <p class="clinica-nombre">Consultorio Dental</p>
+      </div>
+
+      <!-- SECCIÓN: DATOS DEL PACIENTE -->
+      <div *ngIf="seccionActiva === 'datos'" class="seccion-documento">
+        <h2 class="seccion-titulo">DATOS DEL PACIENTE</h2>
+        
+        <div class="datos-grid-pdf">
+          <div class="dato-row">
+            <div class="dato-field full-width">
+              <label>Nombre:</label>
+              <span>{{ paciente.Nombre }}</span>
+            </div>
+          </div>
+
+          <div class="dato-row">
+            <div class="dato-field">
+              <label>Sexo:</label>
+              <span class="checkbox-group">
+                <span class="checkbox" [class.checked]="paciente.Sexo === 'M'">M</span>
+                <span class="checkbox" [class.checked]="paciente.Sexo === 'F'">F</span>
+              </span>
+            </div>
+            <div class="dato-field">
+              <label>Edad:</label>
+              <span>{{ calcularEdad(paciente.FechaNacimiento) }} años</span>
+            </div>
+            <div class="dato-field">
+              <label>Fecha de nacimiento:</label>
+              <span>{{ paciente.FechaNacimiento }}</span>
+            </div>
+          </div>
+
+          <div class="dato-row">
+            <div class="dato-field">
+              <label>Dirección:</label>
+              <span>{{ paciente.Direccion }}</span>
+            </div>
+            <div class="dato-field small">
+              <label>CP:</label>
+              <span>{{ paciente.Codigo_Postal }}</span>
+            </div>
+            <div class="dato-field">
+              <label>Ciudad:</label>
+              <span>{{ paciente.Ciudad }}</span>
+            </div>
+          </div>
+
+          <div class="dato-row">
+            <div class="dato-field">
+              <label>Ocupación:</label>
+              <span>{{ paciente.Ocupacion || 'No especificada' }}</span>
+            </div>
+            <div class="dato-field">
+              <label>Teléfono:</label>
+              <span>{{ paciente.Telefono }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: ANTECEDENTES PERSONALES -->
+      <div *ngIf="seccionActiva === 'antecedentes'" class="seccion-documento">
+        <h2 class="seccion-titulo">ANTECEDENTES PERSONALES</h2>
+        
+        <div class="antecedentes-grid">
+          <div *ngFor="let tipo of tiposAntecedente" class="antecedente-item">
+            <input 
+              type="checkbox" 
+              [id]="'ant_' + tipo.ID_Tipo"
+              [(ngModel)]="antecedentesSeleccionados[tipo.ID_Tipo]"
+            >
+            <label [for]="'ant_' + tipo.ID_Tipo">{{ tipo.Nombre }}</label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            class="btn-guardar" 
+            (click)="guardarAntecedentesPersonales()"
+            [disabled]="guardandoAntecedentes"
+          >
+            {{ guardandoAntecedentes ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: ANTECEDENTES ODONTOLÓGICOS -->
+      <div *ngIf="seccionActiva === 'odonto'" class="seccion-documento">
+        <h2 class="seccion-titulo">ANTECEDENTES ODONTOLÓGICOS</h2>
+        
+        <div class="form-odonto">
+          <div class="form-group">
+            <label>Fecha de su última visita dental:</label>
+            <input 
+              type="date" 
+              [(ngModel)]="antecedentesOdonto.Ultima_Visita"
+              class="input-field"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>¿Cuál fue el motivo de su consulta?</label>
+            <textarea 
+              [(ngModel)]="antecedentesOdonto.Motivo_Consulta"
+              rows="2"
+              class="textarea-field"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>¿Cómo fue su experiencia?</label>
+            <textarea 
+              [(ngModel)]="antecedentesOdonto.Experiencia"
+              rows="2"
+              class="textarea-field"
+            ></textarea>
+          </div>
+
+          <div class="preguntas-sino">
+            <div class="pregunta-item">
+              <label>¿Molestias o dolor en la boca?</label>
+              <div class="radio-group">
+                <label>
+                  <input 
+                    type="radio" 
+                    [value]="1" 
+                    [(ngModel)]="antecedentesOdonto.Molestias_Boca"
+                    name="molestias"
+                  > SÍ
+                </label>
+                <label>
+                  <input 
+                    type="radio" 
+                    [value]="0" 
+                    [(ngModel)]="antecedentesOdonto.Molestias_Boca"
+                    name="molestias"
+                  > NO
+                </label>
+              </div>
+            </div>
+
+            <div class="pregunta-item">
+              <label>¿Le sangran las encías?</label>
+              <div class="radio-group">
+                <label>
+                  <input 
+                    type="radio" 
+                    [value]="1" 
+                    [(ngModel)]="antecedentesOdonto.Sangrado_Encias"
+                    name="sangrado"
+                  > SÍ
+                </label>
+                <label>
+                  <input 
+                    type="radio" 
+                    [value]="0" 
+                    [(ngModel)]="antecedentesOdonto.Sangrado_Encias"
+                    name="sangrado"
+                  > NO
+                </label>
+              </div>
+            </div>
+
+            <div class="pregunta-item">
+              <label>¿Siente movilidad en sus dientes?</label>
+              <div class="radio-group">
+                <label>
+                  <input 
+                    type="radio" 
+                    [value]="1" 
+                    [(ngModel)]="antecedentesOdonto.Movilidad_Dental"
+                    name="movilidad"
+                  > SÍ
+                </label>
+                <label>
+                  <input 
+                    type="radio" 
+                    [value]="0" 
+                    [(ngModel)]="antecedentesOdonto.Movilidad_Dental"
+                    name="movilidad"
+                  > NO
+                </label>
+              </div>
+            </div>
+
+            <div class="pregunta-item">
+              <label>¿Rechina sus dientes?</label>
+              <div class="radio-group">
+                <label>
+                  <input 
+                    type="radio" 
+                    [value]="1" 
+                    [(ngModel)]="antecedentesOdonto.Rechina_Dientes"
+                    name="rechina"
+                  > SÍ
+                </label>
+                <label>
+                  <input 
+                    type="radio" 
+                    [value]="0" 
+                    [(ngModel)]="antecedentesOdonto.Rechina_Dientes"
+                    name="rechina"
+                  > NO
+                </label>
+              </div>
+            </div>
+
+            <div class="pregunta-item">
+              <label>¿Cuántas veces al día cepilla sus dientes?</label>
+              <input 
+                type="number" 
+                [(ngModel)]="antecedentesOdonto.Cepillado_Dia"
+                min="0"
+                max="10"
+                class="input-small"
+              >
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              class="btn-guardar" 
+              (click)="guardarAntecedentesOdonto()"
+              [disabled]="guardandoOdonto"
+            >
+              {{ guardandoOdonto ? 'Guardando...' : 'Guardar Cambios' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: NOTA DE EVOLUCIÓN -->
+      <div *ngIf="seccionActiva === 'evolucion'" class="seccion-documento">
+        <h2 class="seccion-titulo">NOTA DE EVOLUCIÓN</h2>
+        
+        <button 
+          class="btn-agregar-evolucion" 
+          (click)="mostrarFormEvolucion = !mostrarFormEvolucion"
+          *ngIf="!mostrarFormEvolucion"
+        >
+          + Agregar Nueva Evolución
+        </button>
+
+        <!-- FORMULARIO NUEVA EVOLUCIÓN -->
+        <div *ngIf="mostrarFormEvolucion" class="form-evolucion">
+          <h3>Nueva Evolución</h3>
+          
+          <div class="form-group">
+            <label>Fecha:</label>
+            <input 
+              type="date" 
+              [(ngModel)]="nuevaEvolucion.Fecha"
+              class="input-field"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>O.D. (Órgano Dental):</label>
+            <input 
+              type="text" 
+              [(ngModel)]="nuevaEvolucion.OD"
+              class="input-field"
+              placeholder="Ej: 11, 12, 13..."
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Tratamiento:</label>
+            <textarea 
+              [(ngModel)]="nuevaEvolucion.Tratamiento"
+              rows="4"
+              class="textarea-field"
+              placeholder="Describa el tratamiento realizado..."
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Costo:</label>
+            <input 
+              type="number" 
+              [(ngModel)]="nuevaEvolucion.Costo"
+              class="input-field"
+              placeholder="0.00"
+              step="0.01"
+            >
+          </div>
+
+          <div class="form-actions">
+            <button 
+              class="btn-guardar" 
+              (click)="agregarEvolucion()"
+              [disabled]="guardandoEvolucion"
+            >
+              {{ guardandoEvolucion ? 'Guardando...' : 'Guardar Evolución' }}
+            </button>
+            <button 
+              class="btn-cancelar" 
+              (click)="mostrarFormEvolucion = false"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <!-- TABLA DE EVOLUCIONES -->
+        <div *ngIf="evoluciones.length > 0" class="tabla-evolucion">
+          <table>
+            <thead>
+              <tr>
+                <th>FECHA</th>
+                <th>O.D.</th>
+                <th>TRATAMIENTO</th>
+                <th>COSTO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let evo of evoluciones">
+                <td>{{ evo.Fecha }}</td>
+                <td>{{ evo.OD }}</td>
+                <td>{{ evo.Tratamiento }}</td>
+                <td>${{ evo.Costo | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="evoluciones.length === 0 && !mostrarFormEvolucion" class="sin-datos">
+          <p>No hay evoluciones registradas aún.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

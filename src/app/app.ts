@@ -1,5 +1,3 @@
-// app.ts
-
 import { Component } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './shared/components/navbar/navbar';
@@ -18,14 +16,20 @@ export class App {
   isLoginPage: boolean; 
 
   constructor(private router: Router) {
-    
-    // Función central para verificar si la URL debe ocultar el Navbar/Footer
+
     const shouldHideNavbar = (url: string): boolean => {
+      const rutasSinNavbar = [
+        '/login',
+        '/',
+        '/callback',
+        '/dashboard-medico',
+        '/citas-medico',
+        '/historial-clinico'
+      ];
       
-      return url === '/login' || 
-             url === '/' || 
-             url === '/callback' || 
-             url.startsWith('/dashboard-medico');
+      return rutasSinNavbar.some(ruta => 
+        url === ruta || url.startsWith(ruta)
+      );
     };
 
     // 1. ESTABLECER ESTADO INICIAL (al cargar la página, sin esperar eventos)

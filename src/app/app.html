@@ -1,5 +1,7 @@
-<app-navbar *ngIf="!isLoginPage"></app-navbar> 
-<main>
-  <router-outlet></router-outlet>
-</main>
-<app-footer *ngIf="!isLoginPage"></app-footer>
+<div class="app-wrapper">
+  <app-navbar *ngIf="!isLoginPage"></app-navbar>
+  <main [class.medico-layout]="isLoginPage">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer *ngIf="!isLoginPage"></app-footer>
+</div>
