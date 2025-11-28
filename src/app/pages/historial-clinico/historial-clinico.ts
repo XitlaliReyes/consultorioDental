@@ -101,13 +101,20 @@ export class HistorialClinico implements OnInit {
   // Evolución
   evoluciones: Evolucion[] = [];
   nuevaEvolucion: Partial<Evolucion> = {
-    Fecha: new Date().toISOString().split('T')[0],
+    Fecha: (() => {
+      const hoy = new Date();
+      const yyyy = hoy.getFullYear();
+      const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+      const dd = String(hoy.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    })(),
     OD: '',
     Tratamiento: '',
     Costo: 0
   };
   mostrarFormEvolucion = false;
   guardandoEvolucion = false;
+
 
   ngOnInit() {
     this.cargarDatosMedico();
