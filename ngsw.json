@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1764347778199,
+  "timestamp": 1764348000151,
   "index": "/consultorioDental/index.html",
   "assetGroups": [
     {
@@ -20,7 +20,7 @@
         "/consultorioDental/chunk-WYBMJEXJ.js",
         "/consultorioDental/favicon.ico",
         "/consultorioDental/index.html",
-        "/consultorioDental/main-FNTE4PVJ.js",
+        "/consultorioDental/main-DMOXLUSB.js",
         "/consultorioDental/manifest.webmanifest",
         "/consultorioDental/polyfills-5CFQRCPP.js",
         "/consultorioDental/styles-5INURTSO.css"
@@ -87,8 +87,8 @@
     "/consultorioDental/images/img7.jpeg": "5d42de33a54e4aafbca62b59c2e54d2c451b9639",
     "/consultorioDental/images/img8.jpeg": "5f9c238f334aab3008072eff414fbdce24dbcbec",
     "/consultorioDental/images/logdental.jpg": "83e34678248b3d9830d8e201f15df0a0e439511b",
-    "/consultorioDental/index.html": "51f41521f6ef60943665182e5594d17ee36a523a",
-    "/consultorioDental/main-FNTE4PVJ.js": "5c2803f0b8f7049c7a8607e6ac740787b4437378",
+    "/consultorioDental/index.html": "71539b5ff0ac01b8ab086aa90201bef726f3fc65",
+    "/consultorioDental/main-DMOXLUSB.js": "40468c36da0ffe9e5f7ebc8e368fbec09fd1b80e",
     "/consultorioDental/manifest.webmanifest": "c788e73b93577a63ae969dd151935109ad07feed",
     "/consultorioDental/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
     "/consultorioDental/styles-5INURTSO.css": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
