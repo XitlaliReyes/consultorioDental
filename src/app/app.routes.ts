@@ -8,8 +8,9 @@ import { Onboarding } from './pages/onboarding/onboarding';
 import { AuthGuard, MedicoGuard, PacienteGuard } from './guards/auth.guard';
 import { CitasMedico } from './pages/citas/citas-medico/citas-medico';
 
+
 export const routes: Routes = [
-  // Redirige a home sin requerir login
+  // NO redirigir automáticamente a /home
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   
   // ========== RUTAS PÚBLICAS (SIN GUARDS) ==========
@@ -17,7 +18,7 @@ export const routes: Routes = [
   { path: 'nosotros', component: Nosotros },
   { path: 'callback', component: CallbackComponent },
   
-  // HOME - Accesible sin login
+  // HOME - Lazy loading para evitar carga innecesaria
   {
     path: 'home',
     loadComponent: () => import('./pages/public/home/home').then(m => m.Home)
@@ -30,14 +31,14 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   
-  // ========== RUTAS DE PACIENTES (REQUIEREN LOGIN Y ROL PACIENTE) ==========
+  // ========== RUTAS DE PACIENTES ==========
   {
     path: 'citas',
     component: Calendario,
     canActivate: [AuthGuard, PacienteGuard]
   },
   
-  // ========== RUTAS DE MÉDICOS (REQUIEREN LOGIN Y ROL MÉDICO) ==========
+  // ========== RUTAS DE MÉDICOS ==========
   {
     path: 'dashboard-medico',
     loadComponent: () => import('./pages/dashboard-medico/dashboard-medico').then(m => m.DashboardMedicoComponent),
@@ -54,6 +55,6 @@ export const routes: Routes = [
     canActivate: [AuthGuard, MedicoGuard]
   },
   
-  // Ruta por defecto redirige a home en lugar de login
+  // Ruta por defecto
   { path: '**', redirectTo: '/home' }
 ];

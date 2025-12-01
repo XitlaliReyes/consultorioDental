@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { Api } from '../services/api';
-import { Observable, of, map, catchError, switchMap, take } from 'rxjs';
+import { Observable, of, map, catchError, switchMap, take, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class AuthGuard {
       take(1),
       switchMap(isAuthenticated => {
         if (!isAuthenticated) {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/login'], { replaceUrl: true });
           return of(false);
         }
 
@@ -25,13 +25,13 @@ export class AuthGuard {
         return this.api.getRole().pipe(
           map(response => {
             if (!response) {
-              this.router.navigate(['/login']);
+              this.router.navigate(['/login'], { replaceUrl: true });
               return false;
             }
             return true;
           }),
           catchError(() => {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/login'], { replaceUrl: true });
             return of(false);
           })
         );
@@ -57,11 +57,16 @@ export class MedicoGuard {
         if (response?.role === 'Medico') {
           return true;
         }
-        this.router.navigate(['/home']);
+        // Si no es médico, redirigir según su rol
+        if (response?.role === 'Paciente') {
+          this.router.navigate(['/home'], { replaceUrl: true });
+        } else {
+          this.router.navigate(['/login'], { replaceUrl: true });
+        }
         return false;
       }),
       catchError(() => {
-        this.router.navigate(['/home']);
+        this.router.navigate(['/login'], { replaceUrl: true });
         return of(false);
       })
     );
@@ -85,11 +90,16 @@ export class PacienteGuard {
         if (response?.role === 'Paciente') {
           return true;
         }
-        this.router.navigate(['/home']);
+        // Si no es paciente, redirigir según su rol
+        if (response?.role === 'Medico') {
+          this.router.navigate(['/dashboard-medico'], { replaceUrl: true });
+        } else {
+          this.router.navigate(['/login'], { replaceUrl: true });
+        }
         return false;
       }),
       catchError(() => {
-        this.router.navigate(['/home']);
+        this.router.navigate(['/login'], { replaceUrl: true });
         return of(false);
       })
     );

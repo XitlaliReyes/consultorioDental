@@ -131,32 +131,6 @@
         </div>
       </div>
 
-      <!-- SECCIÓN: ANTECEDENTES PERSONALES -->
-      <!-- <div *ngIf="seccionActiva === 'antecedentes'" class="seccion-documento">
-        <h2 class="seccion-titulo">ANTECEDENTES PERSONALES</h2>
-        
-        <div class="antecedentes-grid">
-          <div *ngFor="let tipo of tiposAntecedente" class="antecedente-item">
-            <input 
-              type="checkbox" 
-              [id]="'ant_' + tipo.ID_Tipo"
-              [(ngModel)]="antecedentesSeleccionados[tipo.ID_Tipo]"
-            >
-            <label [for]="'ant_' + tipo.ID_Tipo">{{ tipo.Nombre }}</label>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button 
-            class="btn-guardar" 
-            (click)="guardarAntecedentesPersonales()"
-            [disabled]="guardandoAntecedentes"
-          >
-            {{ guardandoAntecedentes ? 'Guardando...' : 'Guardar Cambios' }}
-          </button>
-        </div>
-      </div> -->
-
       <!-- Contenedor principal (asumiendo que los tabs están arriba) -->
       <div class="historial-container">
         
@@ -165,13 +139,6 @@
 
           <div *ngIf="seccionActiva === 'antecedentes'" class="seccion-documento antecedentes-personales">
             <h2 class="seccion-titulo">ANTECEDENTES PERSONALES</h2>
-            
-            <!-- NOTA IMPORTANTE: Si la lista 'tiposAntecedente' está vacía, 
-                NADA dentro del *ngIf de abajo se mostrará.
-                Verifica tu API para asegurarte de que está devolviendo la lista 
-                (Anemia, Diabetes, etc.) correctamente. -->
-
-            <!-- SECCIÓN 1: CHECKLIST DE ENFERMEDADES (2 Columnas) -->
             <div *ngIf="tiposAntecedente.length > 0" class="antecedentes-checklist">
               
               <!-- Contenedor para la lista en grid de 2 columnas -->

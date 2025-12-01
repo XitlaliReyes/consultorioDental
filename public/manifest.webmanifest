@@ -1,8 +1,8 @@
 {
   "name": "Sonrisas",
   "short_name": "Sonrisas",
-  "theme_color": "#5b6683",
-  "background_color": "#5b6683",
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",

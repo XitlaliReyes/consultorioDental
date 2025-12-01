@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { Api } from '../../services/api';
 import { CommonModule } from '@angular/common';
-import { take } from 'rxjs/operators';
+import { take, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-callback',
@@ -18,13 +18,21 @@ export class CallbackComponent implements OnInit {
   private api = inject(Api);
 
   ngOnInit() {
-    this.auth.isAuthenticated$.pipe(take(1)).subscribe(isAuthenticated => {
+    // Esperamos a que Auth0 termine de autenticar
+    this.auth.isLoading$.pipe(
+      filter(loading => !loading), // Esperar a que termine de cargar
+      take(1)
+    ).subscribe(() => {
+      this.auth.isAuthenticated$.pipe(take(1)).subscribe(isAuthenticated => {
         if (isAuthenticated) {
           this.checkUserRoleAndRedirect();
+        } else {
+          // Si no está autenticado después de cargar, ir a login
+          this.router.navigate(['/login']);
         }
       });
+    });
   }
-
 
   private checkUserRoleAndRedirect() {
     this.api.getRole().subscribe({
@@ -37,23 +45,24 @@ export class CallbackComponent implements OnInit {
 
         console.log('Rol del usuario:', response.role);
 
+        // Navegación con skipLocationChange para evitar parpadeos
         switch (response.role) {
           case 'Medico':
-            this.router.navigate(['/dashboard-medico']);
+            this.router.navigate(['/dashboard-medico'], { replaceUrl: true });
             break;
           case 'Paciente':
-            this.router.navigate(['/home']);
+            this.router.navigate(['/home'], { replaceUrl: true });
             break;
           case 'no_profile':
-            this.router.navigate(['/onboarding']);
+            this.router.navigate(['/onboarding'], { replaceUrl: true });
             break;
           default:
-            this.router.navigate(['/login']);
+            this.router.navigate(['/login'], { replaceUrl: true });
         }
       },
       error: (error) => {
         console.error('Error al verificar el rol:', error);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], { replaceUrl: true });
       }
     });
   }

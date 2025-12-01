@@ -29,7 +29,7 @@ export class CedulaVerificationService {
    */
   verificarCedula(cedula: string, nombre: string, apellidos: string): Observable<CedulaVerificationResult> {
     // CAMBIAR ESTA URL por la de tu backend
-    const url = 'http://localhost:3000/api/verificar-cedula'; // ← AJUSTA EL PUERTO SI ES NECESARIO
+    const url = 'https://consultorio-backend-production-9816.up.railway.app/api/verificar-cedula'; // ← AJUSTA EL PUERTO SI ES NECESARIO
     
     console.log('🔍 Verificando cédula con backend:', { cedula, nombre, apellidos });
 
