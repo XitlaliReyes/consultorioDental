@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { Api } from '../../services/api';
 import { CommonModule } from '@angular/common';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-callback',
@@ -17,12 +18,13 @@ export class CallbackComponent implements OnInit {
   private api = inject(Api);
 
   ngOnInit() {
-    this.auth.isAuthenticated$.subscribe(isAuthenticated => {
-      if (isAuthenticated) {
-        this.checkUserRoleAndRedirect();
-      }
-    });
+    this.auth.isAuthenticated$.pipe(take(1)).subscribe(isAuthenticated => {
+        if (isAuthenticated) {
+          this.checkUserRoleAndRedirect();
+        }
+      });
   }
+
 
   private checkUserRoleAndRedirect() {
     this.api.getRole().subscribe({

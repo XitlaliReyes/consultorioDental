@@ -1,3 +1,4 @@
+/* Navbar base */
 .navbar {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(5px);
@@ -31,8 +32,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
   color: white;
+  font-weight: bold;
 }
 
 .navbar-title {
@@ -59,33 +60,27 @@
   color: #D3E9F5;
 }
 
-.navbar-btn {
-  background: #D3E9F5;
-  color: #1f2937;
+/* Hamburger menu */
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 25px;
+  height: 18px;
+  background: none;
   border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1.5rem;
-  font-weight: 500;
   cursor: pointer;
-  transition: background 0.3s ease;
 }
 
-.navbar-btn:hover {
-  background: rgba(211, 233, 245, 0.8);
+.navbar-toggle span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background: #6b7280;
+  border-radius: 2px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .navbar-nav {
-    display: none;
-  }
-  
-  .navbar-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-  }
-}
-
+/* Alerta modal base */
 .alert-overlay {
   position: fixed;
   top: 0;
@@ -112,31 +107,13 @@
   text-align: center;
 }
 
-.alert-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.alert-title {
-  color: #333;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.alert-message {
-  color: #666;
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
-
 .alert-buttons {
   display: flex;
   gap: 1rem;
   justify-content: center;
 }
 
+/* Botones alerta */
 .btn-alert-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -146,7 +123,6 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 1rem;
 }
 
 .btn-alert-primary:hover {
@@ -162,48 +138,5 @@
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-}
-
-.btn-alert-secondary:hover {
-  background: #f5f5f5;
-  border-color: #999;
-}
-
-/* Animaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive para alertas */
-@media (max-width: 768px) {
-  .alert-modal {
-    padding: 1.5rem;
-  }
-
-  .alert-buttons {
-    flex-direction: column;
-  }
-
-  .btn-alert-primary,
-  .btn-alert-secondary {
-    width: 100%;
-  }
+  transition: a
 }

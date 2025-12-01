@@ -1,5 +1,10 @@
+<button class="menu-toggle" (click)="toggleSidebar()">
+  <span class="icon fa-solid fa-bars"></span>
+</button>
+
+<div class="sidebar-overlay" [class.active]="sidebarOpen" (click)="toggleSidebar()"></div>
 <div class="dashboard-container">
-  <aside class="sidebar">
+  <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="sidebar-header">
         <h2> Panel Médico</h2>
     </div>
@@ -205,3 +210,4 @@
     </div>
   </main>
 </div>
+

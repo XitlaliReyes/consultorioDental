@@ -144,14 +144,14 @@ export class Api {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
 
-  private API_URL = 'https://consultorio-backend-production-9816.up.railway.app/api'; // URL base general
+  private API_URL = 'https://consultorio-backend-production-9816.up.railway.app'; // URL base general
 
   // 1. Obtiene el rol del usuario autenticado
   getRole(): Observable<ProfileRoleResponse | null> {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.get<ProfileRoleResponse>(`${this.API_URL}/profile/get-role`, { headers });
+        return this.http.get<ProfileRoleResponse>(`${this.API_URL}/api/profile/get-role`, { headers });
       }),
       catchError(error => {
         console.error('Error al obtener el rol o token no disponible:', error);
@@ -166,7 +166,7 @@ export class Api {
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
         const payload = { rol, data };
-        return this.http.post(`${this.API_URL}/profile/register`, payload, { headers });
+        return this.http.post(`${this.API_URL}/api/profile/register`, payload, { headers });
       })
     );
   }
@@ -176,7 +176,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.get<ServicioConCitas[]>(`${this.API_URL}/citas/pendientes`, { headers });
+        return this.http.get<ServicioConCitas[]>(`${this.API_URL}/api/citas/pendientes`, { headers });
       }),
       catchError(error => {
         console.error('Error al obtener citas pendientes:', error);
@@ -190,7 +190,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.post(`${this.API_URL}/citas/aceptar/${idCita}`, {}, { headers });
+        return this.http.post(`${this.API_URL}/api/citas/aceptar/${idCita}`, {}, { headers });
       })
     );
   }
@@ -200,7 +200,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.get<CitaMedico[]>(`${this.API_URL}/citas/mis-citas-medico`, { headers });
+        return this.http.get<CitaMedico[]>(`${this.API_URL}/api/citas/mis-citas-medico`, { headers });
       }),
       catchError(error => {
         console.error('Error al obtener citas del médico:', error);
@@ -215,7 +215,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.get<PacienteBasico[]>(`${this.API_URL}/medico/mis-pacientes`, { headers });
+        return this.http.get<PacienteBasico[]>(`${this.API_URL}/api/medico/mis-pacientes`, { headers });
       }),
       catchError(error => {
         console.error('Error al obtener lista de pacientes del médico:', error);
@@ -230,7 +230,7 @@ export class Api {
       switchMap((token: string) => {
         const headers = { Authorization: `Bearer ${token}` };
         return this.http.get<PacienteDetalle>(
-          `${this.API_URL}/paciente/${idPaciente}`,
+          `${this.API_URL}/api/paciente/${idPaciente}`,
           { headers }
         ).pipe(
           catchError((error) => {
@@ -254,7 +254,7 @@ export class Api {
         const headers = { Authorization: `Bearer ${token}` };
         
         // La nueva ruta que creaste en el backend
-        return this.http.post(`${this.API_URL}/citas/cancelar-medico/${idCita}`, {}, { headers });
+        return this.http.post(`${this.API_URL}/api/citas/cancelar-medico/${idCita}`, {}, { headers });
       })
     );
   }
@@ -269,7 +269,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.get<AntecedenteTipo[]>(`${this.API_URL}/antecedente/tipos`, { headers });
+        return this.http.get<AntecedenteTipo[]>(`${this.API_URL}/api/antecedente/tipos`, { headers });
       }),
       tap(tipos => console.log('Tipos obtenidos (tap):', tipos)), // <--- aquí ves los datos
       catchError(err => {
@@ -286,7 +286,7 @@ export class Api {
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
         return this.http.get<PacienteAntecedente[]>(
-          `${this.API_URL}/paciente/${idPaciente}/antecedentes`, { headers }
+          `${this.API_URL}/api/paciente/${idPaciente}/antecedentes`, { headers }
         );
       }),
       catchError(err => {
@@ -301,7 +301,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.post(`${this.API_URL}/paciente/${idPaciente}/antecedentes`, { antecedentes: payload }, { headers });
+        return this.http.post(`${this.API_URL}/api/paciente/${idPaciente}/antecedentes`, { antecedentes: payload }, { headers });
       }),
       catchError(err => {
         console.error('Error al actualizar antecedentes médicos:', err);
@@ -315,7 +315,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.get<AntecedentesOdontologicos>(`${this.API_URL}/paciente/${idPaciente}/antecedentes-odontologicos`, { headers });
+        return this.http.get<AntecedentesOdontologicos>(`${this.API_URL}/api/paciente/${idPaciente}/antecedentes-odontologicos`, { headers });
       }),
       catchError(err => {
         console.error('Error al obtener antecedentes odontológicos:', err);
@@ -328,7 +328,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.put(`${this.API_URL}/paciente/${idPaciente}/antecedentes-odontologicos`, payload, { headers });
+        return this.http.put(`${this.API_URL}/api/paciente/${idPaciente}/antecedentes-odontologicos`, payload, { headers });
       }),
       catchError(err => {
         console.error('Error al actualizar antecedentes odontológicos:', err);
@@ -342,7 +342,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.get<Odontograma[]>(`${this.API_URL}/paciente/${idPaciente}/odontogramas`, { headers });
+        return this.http.get<Odontograma[]>(`${this.API_URL}/api/paciente/${idPaciente}/odontogramas`, { headers });
       }),
       catchError(err => {
         console.error('Error al obtener odontogramas:', err);
@@ -359,7 +359,7 @@ export class Api {
         const form = new FormData();
         form.append('file', file);
         if (observaciones) form.append('observaciones', observaciones);
-        return this.http.post(`${this.API_URL}/paciente/${idPaciente}/odontograma`, form, { headers });
+        return this.http.post(`${this.API_URL}/api/paciente/${idPaciente}/odontograma`, form, { headers });
       }),
       catchError(err => {
         console.error('Error al subir odontograma:', err);
@@ -373,7 +373,7 @@ export class Api {
     return this.auth.getAccessTokenSilently().pipe(
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.get<Evolucion[]>(`${this.API_URL}/paciente/${idPaciente}/evolucion`, { headers });
+        return this.http.get<Evolucion[]>(`${this.API_URL}/api/paciente/${idPaciente}/evolucion`, { headers });
       }),
       catchError(err => {
         console.error('Error al obtener evolución:', err);
@@ -388,7 +388,7 @@ export class Api {
       switchMap(token => {
         const headers = { Authorization: `Bearer ${token}` };
         // Asegúrate que el payload incluya los campos que espera el backend
-        return this.http.post<Evolucion>(`${this.API_URL}/paciente/${idPaciente}/evolucion`, evo, { headers });
+        return this.http.post<Evolucion>(`${this.API_URL}/api/paciente/${idPaciente}/evolucion`, evo, { headers });
       }),
       catchError(err => {
         console.error('Error al agregar evolución:', err);
@@ -397,13 +397,12 @@ export class Api {
     );
   }
 
-
   // Rutas de prueba
-  getServidorStatus(): Observable<any> {
-    return this.http.get(`http://localhost:3000/`);
-  }
+  // getServidorStatus(): Observable<any> {
+  //   return this.http.get(`http://localhost:3000/`);
+  // }
 
-  getTablas(): Observable<any> {
-    return this.http.get(`http://localhost:3000/test-db`);
-  }
+  // getTablas(): Observable<any> {
+  //   return this.http.get(`http://localhost:3000/test-db`);
+  // }
 }

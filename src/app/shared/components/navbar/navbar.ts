@@ -13,7 +13,8 @@ import { AuthService } from '@auth0/auth0-angular';
 export class Navbar {
   private auth = inject(AuthService);
   private router = inject(Router);
-  
+  menuOpen = false;
+
   isAuthenticated$ = this.auth.isAuthenticated$;
 
   login() {
@@ -23,7 +24,7 @@ export class Navbar {
   logout() {
     this.auth.logout({
       logoutParams: {
-        returnTo: window.location.origin + '/login'
+        returnTo: `${window.location.origin}/consultorioDental/home`
       }
     });
   }

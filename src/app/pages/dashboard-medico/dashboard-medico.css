@@ -794,3 +794,173 @@
     font-size: 1.5rem;
   }
 }
+
+/* ========== BOTÓN DE MENÚ MÓVIL ========== */
+.menu-toggle {
+  display: none; /* Oculto por defecto en desktop */
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: linear-gradient(135deg, #d4e8f7 0%, #b8d9f0 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 15px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.menu-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.menu-toggle .icon {
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .citas-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mostrar botón de menú en móvil */
+  .menu-toggle {
+    display: block;
+  }
+
+  /* Sidebar oculto por defecto en móvil */
+  .sidebar {
+    position: fixed;
+    left: -260px; /* Oculto fuera de la pantalla */
+    width: 260px;
+    height: 100vh;
+    transition: left 0.3s ease;
+    z-index: 1000;
+  }
+
+  /* Sidebar visible cuando tiene la clase 'open' */
+  .sidebar.open {
+    left: 0;
+  }
+
+  /* Overlay oscuro cuando el sidebar está abierto */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+  }
+
+  /* Main content ocupa todo el ancho */
+  .main-content {
+    margin-left: 0;
+    padding: 80px 15px 20px 15px; /* Espacio arriba para el botón de menú */
+    width: 100%;
+  }
+
+  /* Stats en una columna */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Citas en una columna */
+  .citas-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* Ajustes de header */
+  .dashboard-header {
+    padding: 20px 15px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+
+  /* Ajustes de tarjetas de citas para móvil */
+  .cita-card {
+    flex-direction: column;
+  }
+
+  .cita-header {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 12px 15px;
+  }
+
+  .cita-header .fecha,
+  .cita-header .hora {
+    text-align: left;
+  }
+
+  /* Botón de volver más visible en móvil */
+  .btn-back {
+    margin-bottom: 15px;
+    width: auto;
+  }
+
+  /* Detalle de paciente responsive */
+  .detalle-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  /* Acciones de paciente centradas en móvil */
+  .paciente-acciones {
+    text-align: center;
+  }
+
+  .paciente-acciones .btn-secondary {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 70px 10px 15px 10px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .user-email {
+    font-size: 0.85rem;
+  }
+
+  .stat-number {
+    font-size: 1.8rem;
+  }
+
+  .card {
+    padding: 20px 15px;
+  }
+
+  .card-title {
+    font-size: 1.3rem;
+  }
+}

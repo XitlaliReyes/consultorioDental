@@ -75,7 +75,6 @@ export class DashboardMedicoComponent implements OnInit {
       this.router.navigate(['/historial-clinico', id]);
     }
 
-
   // NUEVO MÉTODO: Cargar lista de pacientes
   cargarMisPacientes() {
     this.isLoadingPacientes = true;
@@ -150,9 +149,15 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
 
+  sidebarOpen = false;
+  
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
   // MODIFICAR MÉTODO navegarA
   navegarA(vista: 'dashboard' | 'citas' | 'pacientes' | 'paciente-detalle') {
     this.vistaActual = vista;
+    this.sidebarOpen = false;
     this.pacienteSeleccionado = null; // Limpiar detalle al cambiar de vista principal
     
     
@@ -225,8 +230,9 @@ export class DashboardMedicoComponent implements OnInit {
   logout() {
     this.auth.logout({
       logoutParams: {
-        returnTo: window.location.origin + '/login'
+        returnTo: `${window.location.origin}/consultorioDental/home`
       }
     });
   }
+
 }
