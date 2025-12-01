@@ -11,7 +11,7 @@ import { CitasMedico } from './pages/citas/citas-medico/citas-medico';
 
 export const routes: Routes = [
   // NO redirigir automáticamente a /home
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '', redirectTo: '/callback', pathMatch: 'full' },
   
   // ========== RUTAS PÚBLICAS (SIN GUARDS) ==========
   { path: 'login', component: Login },
@@ -56,5 +56,5 @@ export const routes: Routes = [
   },
   
   // Ruta por defecto
-  { path: '**', redirectTo: '/home' }
+  { path: '**', redirectTo: '/callback' }
 ];
